@@ -1,18 +1,11 @@
 <resources>
-    <!-- Action bars blend into the page scrim (no band, no shadow). -->
-    <style name="RRActionBar.Light" parent="android:Widget.DeviceDefault.Light.ActionBar.Solid">
-        <item name="android:background">@color/page_light</item>
-        <item name="android:elevation">0dp</item>
-    </style>
-    <style name="RRActionBar.Dark" parent="android:Widget.DeviceDefault.ActionBar.Solid">
-        <item name="android:background">@color/page_dark</item>
-        <item name="android:elevation">0dp</item>
-    </style>
-
     <!-- Terminal glass: the window shows the wallpaper through a translucent
-         scrim; UiTheme blurs it on Android 12+. -->
+         scrim; UiTheme blurs it on Android 12+. The header bar is built in
+         code (RR▌ + tabs), so no ActionBar here. -->
     <style name="AppTheme" parent="android:style/Theme.DeviceDefault.Light">
         <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:fontFamily">@font/jetbrainsmono_regular</item>
@@ -24,11 +17,12 @@
         <item name="subTextColor">@color/text_navy</item>
         <item name="pageBackgroundColor">@color/page_light</item>
         <item name="cardColor">@color/card_light</item>
-        <item name="android:actionBarStyle">@style/RRActionBar.Light</item>
     </style>
 
     <style name="AppTheme.Dark" parent="android:style/Theme.DeviceDefault">
         <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
         <item name="android:fontFamily">@font/jetbrainsmono_regular</item>
@@ -40,6 +34,5 @@
         <item name="subTextColor">@color/subtext_on_dark</item>
         <item name="pageBackgroundColor">@color/page_dark</item>
         <item name="cardColor">@color/card_dark</item>
-        <item name="android:actionBarStyle">@style/RRActionBar.Dark</item>
     </style>
 </resources>

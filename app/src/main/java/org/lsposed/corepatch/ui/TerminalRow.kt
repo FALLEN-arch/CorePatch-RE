@@ -1,12 +1,11 @@
 package org.lsposed.corepatch.ui
 
 import android.content.Context
-import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.TextView
-import org.lsposed.corepatch.R
+import org.lsposed.corepatch.UiTheme
 
 /**
  * A terminal-style toggle row: `» key ······ [ON]`, with the description
@@ -16,27 +15,27 @@ import org.lsposed.corepatch.R
 class TerminalRow(context: Context) : LinearLayout(context) {
 
     val keyView = TextView(context).apply {
-        typeface = context.resources.getFont(R.font.jetbrainsmono_regular)
+        typeface = UiTheme.mono(context, UiTheme.WEIGHT_REGULAR)
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
-        setTextColor(textColorPrimary())
+        setTextColor(context.textColorPrimary())
         gravity = Gravity.CENTER_VERTICAL
     }
 
     private val leaderView = TextView(context).apply {
-        typeface = context.resources.getFont(R.font.jetbrainsmono_regular)
+        typeface = UiTheme.mono(context, UiTheme.WEIGHT_REGULAR)
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
         text = ".".repeat(64)
         maxLines = 1
     }
 
     private val statusView = TextView(context).apply {
-        typeface = context.resources.getFont(R.font.jetbrainsmono_bold)
+        typeface = UiTheme.mono(context, UiTheme.WEIGHT_BOLD)
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
         gravity = Gravity.CENTER_VERTICAL
     }
 
     private val subtitleView = TextView(context).apply {
-        typeface = context.resources.getFont(R.font.jetbrainsmono_regular)
+        typeface = UiTheme.mono(context, UiTheme.WEIGHT_REGULAR)
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
     }
 
@@ -75,8 +74,8 @@ class TerminalRow(context: Context) : LinearLayout(context) {
     ) {
         this.checked = initial
         keyView.text = title
-        setTextColorOf(subtitleView, subText)
-        setTextColorOf(leaderView, applyAlpha(subText, 0.4f))
+        subtitleView.setTextColor(subText)
+        leaderView.setTextColor(subText.withAlpha(0.4f))
         subtitleView.text = subtitle
         statusView.setTextColor(if (initial) accent else subText)
 
@@ -101,20 +100,5 @@ class TerminalRow(context: Context) : LinearLayout(context) {
             append(if (checked) ". On" else ". Off")
         }
         contentDescription = desc
-    }
-
-    private fun textColorPrimary(): Int {
-        val value = TypedValue()
-        context.theme.resolveAttribute(android.R.attr.textColorPrimary, value, true)
-        return value.data
-    }
-
-    private fun setTextColorOf(view: TextView, color: Int) {
-        view.setTextColor(color)
-    }
-
-    private fun applyAlpha(color: Int, alpha: Float): Int {
-        val a = (255 * alpha).toInt().coerceIn(0, 255)
-        return (a shl 24) or (color and 0x00FFFFFF)
     }
 }

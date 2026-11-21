@@ -1,8 +1,9 @@
 package org.lsposed.corepatch
 
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
+import android.content.Context
+import android.content.res.Configuration
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
@@ -13,37 +14,131 @@ import android.text.style.TypefaceSpan
 import android.view.Gravity
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import org.lsposed.corepatch.App.Companion.mService
 import org.lsposed.corepatch.App.Companion.reloadListener
-import org.lsposed.corepatch.data.SwitchData
-import org.lsposed.corepatch.ui.TerminalRow
+import org.lsposed.corepatch.ui.UiPrefs
 import org.lsposed.corepatch.ui.dp
+import org.lsposed.corepatch.ui.homeScreen
+import org.lsposed.corepatch.ui.patchesScreen
+import org.lsposed.corepatch.ui.settingsScreen
 import org.lsposed.corepatch.ui.themeColor
+import java.util.Locale
 
 class MainActivity : Activity() {
+
+    companion object {
+        private const val TAB_HOME = 0
+        private const val TAB_PATCHES = 1
+        private const val TAB_SETTINGS = 2
+
+        // Survives recreate() so the user stays on the tab they were on
+        // after changing an appearance setting.
+        private var lastTab = TAB_HOME
+    }
+
+    private var contentLayout: FrameLayout? = null
+
+    /** Applies the language chosen in Settings ▸ Appearance ▸ Language. */
+    override fun attachBaseContext(base: Context) {
+        val lang = UiPrefs.language(base)
+        super.attachBaseContext(
+            if (lang == UiPrefs.LANG_SYSTEM) base else {
+                val config = Configuration(base.resources.configuration)
+                config.setLocale(Locale.forLanguageTag(lang))
+                base.createConfigurationContext(config)
+            }
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         UiTheme.apply(this)
         super.onCreate(savedInstanceState)
-        title = styledTitle()
         reloadListener = {
             runOnUiThread {
                 showContent()
             }
         }
+
+        val root = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            fitsSystemWindows = true
+        }
+        root.addView(buildHeader())
+        val content = FrameLayout(this)
+        contentLayout = content
+        root.addView(content, LinearLayout.LayoutParams(MATCH_PARENT, 0, 1f))
+        setContentView(root)
         showContent()
+    }
+
+    /** Terminal header: `RR▌` on the left, tab labels with underlines right. */
+    private fun buildHeader(): View {
+        val accent = UiTheme.accent
+        val subText = themeColor(R.attr.subTextColor)
+        val header = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(16.dp, 12.dp, 16.dp, 0)
+        }
+        header.addView(TextView(this).apply {
+            text = styledTitle()
+            setTextSize(20f)
+        })
+        header.addView(View(this), LinearLayout.LayoutParams(0, 1, 1f))
+        val tabs = arrayOf(R.string.nav_home, R.string.nav_patches, R.string.nav_settings)
+        tabs.forEachIndexed { index, resId ->
+            header.addView(tabView(getString(resId), index, accent, subText))
+        }
+        return header
+    }
+
+    private fun tabView(label: String, index: Int, accent: Int, subText: Int): View {
+        val active = lastTab == index
+        return LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            minimumHeight = 44.dp
+            layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
+                marginStart = 12.dp
+            }
+            contentDescription = label
+            setOnClickListener {
+                if (lastTab != index) {
+                    lastTab = index
+                    showContent()
+                }
+            }
+            addView(TextView(this@MainActivity).apply {
+                text = label
+                typeface = UiTheme.mono(this@MainActivity, UiTheme.WEIGHT_MEDIUM)
+                setTextSize(13f)
+                letterSpacing = 0.05f
+                setTextColor(if (active) accent else subText)
+                setPadding(6.dp, 10.dp, 6.dp, 4.dp)
+            })
+            addView(View(this@MainActivity).apply {
+                setBackgroundColor(if (active) accent else Color.TRANSPARENT)
+            }, LinearLayout.LayoutParams(MATCH_PARENT, 2.dp))
+        }
     }
 
     private fun showContent() {
         val service = mService
-        if (service == null || "system" !in service.scope) {
-            setContentView(unavailableView())
-            return
+        val available = service != null && "system" in service.scope
+        val view = when (lastTab) {
+            TAB_HOME -> homeScreen(this)
+            TAB_PATCHES -> if (available) patchesScreen(this) else unavailableView()
+            TAB_SETTINGS -> settingsScreen(this) { recreate() }
+            else -> homeScreen(this)
         }
-        loadPrefs()
+        contentLayout?.let { container ->
+            container.removeAllViews()
+            container.addView(view, FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT))
+        }
     }
 
     /** Guidance state shown when the Xposed service is not connected. */
@@ -52,7 +147,6 @@ class MainActivity : Activity() {
         return LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
-            fitsSystemWindows = true
             setPadding(32.dp, 16.dp, 32.dp, 16.dp)
             addView(ImageView(this@MainActivity).apply {
                 setImageResource(R.drawable.ic_sec_verification)
@@ -64,7 +158,7 @@ class MainActivity : Activity() {
             })
             addView(TextView(this@MainActivity).apply {
                 setText(R.string.xposed_service_unavailable)
-                typeface = resources.getFont(R.font.jetbrainsmono_bold)
+                typeface = UiTheme.mono(this@MainActivity, UiTheme.WEIGHT_BOLD)
                 setTextSize(16f)
                 gravity = Gravity.CENTER
                 layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
@@ -74,7 +168,7 @@ class MainActivity : Activity() {
             addView(TextView(this@MainActivity).apply {
                 setText(R.string.xposed_service_unavailable_summary)
                 setTextColor(themeColor(R.attr.subTextColor))
-                typeface = resources.getFont(R.font.jetbrainsmono_regular)
+                typeface = UiTheme.mono(this@MainActivity, UiTheme.WEIGHT_REGULAR)
                 setTextSize(13f)
                 gravity = Gravity.CENTER
                 layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
@@ -82,93 +176,11 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun loadPrefs() {
-        val rows = listOf(
-            getString(R.string.section_installation) to listOf(
-                SwitchData(getString(R.string.bypass_downgrade), getString(R.string.bypass_downgrade_summary), Config.BYPASS_DOWNGRADE),
-                SwitchData(getString(R.string.bypass_min_sdk), getString(R.string.bypass_min_sdk_summary), Config.BYPASS_MIN_SDK),
-                SwitchData(getString(R.string.bypass_resource_arsc_restrictions), getString(R.string.bypass_resource_arsc_restrictions_summary), Config.BYPASS_RESOURCE_ARSC_RESTRICTIONS),
-                SwitchData(getString(R.string.bypass_shared_user), getString(R.string.bypass_shared_user_summary), Config.BYPASS_SHARED_USER),
-            ),
-            getString(R.string.section_signature_checks) to listOf(
-                SwitchData(getString(R.string.bypass_verification), getString(R.string.bypass_verification_summary), Config.BYPASS_VERIFICATION),
-                SwitchData(getString(R.string.bypass_digest), getString(R.string.bypass_digest_summary), Config.BYPASS_DIGEST),
-                SwitchData(getString(R.string.bypass_exact_signature_match), getString(R.string.bypass_exact_signature_match_summary), Config.BYPASS_EXACT_SIGNATURE_MATCH),
-                SwitchData(
-                    getString(R.string.use_previous_signatures), getString(R.string.use_previous_signatures_summary), Config.USE_PREVIOUS_SIGNATURES,
-                    if (isMiui()) {
-                        getString(R.string.miui_usepresig_warn) + "\n\n" + getString(R.string.use_previous_signatures_warning)
-                    } else {
-                        getString(R.string.use_previous_signatures_warning)
-                    }
-                ),
-            ),
-            getString(R.string.section_verification_services) to listOf(
-                SwitchData(getString(R.string.disable_verification_agent), getString(R.string.disable_verification_agent_summary), Config.DISABLE_VERIFICATION_AGENT),
-                SwitchData(getString(R.string.disable_developer_verification), getString(R.string.disable_developer_verification_summary), Config.DISABLE_DEVELOPER_VERIFICATION),
-                SwitchData(getString(R.string.bypass_block), getString(R.string.bypass_block_summary), Config.BYPASS_BLOCK),
-            ),
-            getString(R.string.section_system_behavior) to listOf(
-                SwitchData(getString(R.string.allow_hidden_apis_for_system_apps), getString(R.string.allow_hidden_apis_for_system_apps_summary), Config.ALLOW_HIDDEN_APIS_FOR_SYSTEM_APPS),
-            ),
-        )
-
-        val accent = UiTheme.accent
-        val subText = themeColor(R.attr.subTextColor)
-
-        val scroll = ScrollView(this).apply {
-            fitsSystemWindows = true
-        }
-        val page = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(16.dp, 16.dp, 16.dp, 24.dp)
-        }
-        scroll.addView(page)
-
-        fun addSection(title: String, section: List<SwitchData>) {
-            page.addView(sectionHeader(title, accent))
-            val card = LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                background = getDrawable(R.drawable.card_bg)
-            }
-            section.forEach { data ->
-                card.addView(TerminalRow(this).apply {
-                    setRow(data.title, data.description, Config.getConfig(data.key), accent, subText) { isChecked ->
-                        Config.setConfig(data.key, isChecked)
-                        if (isChecked && data.warning != null) {
-                            AlertDialog.Builder(this@MainActivity)
-                                .setMessage(data.warning)
-                                .setPositiveButton(android.R.string.ok, null)
-                                .show()
-                        }
-                    }
-                })
-            }
-            page.addView(card)
-        }
-
-        rows.forEach { (header, section) -> addSection(header, section) }
-
-        setContentView(scroll)
-    }
-
-    /** ASCII section rule above each card: `── SIGNATURE CHECKS` */
-    private fun sectionHeader(title: String, accent: Int): TextView {
-        return TextView(this).apply {
-            typeface = resources.getFont(R.font.jetbrainsmono_medium)
-            setTextSize(12f)
-            letterSpacing = 0.1f
-            setTextColor(accent)
-            setPadding(20.dp, 24.dp, 20.dp, 8.dp)
-            text = "── ${title.uppercase()}"
-        }
-    }
-
     private fun styledTitle(): CharSequence {
         // "RR▌" — the block is the terminal cursor.
         return SpannableString("RR▌").apply {
             setSpan(
-                BrandTypefaceSpan(resources.getFont(R.font.jetbrainsmono_bold)),
+                BrandTypefaceSpan(UiTheme.mono(this@MainActivity, UiTheme.WEIGHT_BOLD)),
                 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             setSpan(
@@ -185,15 +197,6 @@ class MainActivity : Activity() {
         private fun apply(paint: TextPaint) {
             paint.typeface = typeface
         }
-    }
-
-    @SuppressLint("PrivateApi")
-    private fun isMiui(): Boolean = try {
-        val systemProperties = Class.forName("android.os.SystemProperties")
-        val get = systemProperties.getMethod("get", String::class.java)
-        (get.invoke(null, "ro.miui.ui.version.code") as String).isNotEmpty()
-    } catch (_: ReflectiveOperationException) {
-        false
     }
 
     override fun onStop() {
