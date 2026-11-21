@@ -137,7 +137,7 @@ class MainActivity : Activity() {
         val prefix = base.removeSuffix("-RE")
         return SpannableString(base).apply {
             setSpan(
-                BrandTypefaceSpan(getFont(R.font.space_grotesk_bold)),
+                BrandTypefaceSpan(resources.getFont(R.font.space_grotesk_bold)),
                 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             if (prefix.length != base.length) {
