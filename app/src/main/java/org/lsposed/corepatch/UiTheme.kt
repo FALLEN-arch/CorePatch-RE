@@ -13,8 +13,9 @@ import android.view.WindowManager
  * accent hue is derived from the wallpaper itself.
  */
 object UiTheme {
-    /** Fallback accent: the RR icon lavender. */
-    private val FALLBACK_ACCENT = 0xFFB0B8F0.toInt() // the RR icon lavender
+    /** Fallback accents: the RR icon lavender, tuned per scrim. */
+    private val FALLBACK_ACCENT_BRIGHT = 0xFFB0B8F0.toInt()
+    private val FALLBACK_ACCENT_DEEP = 0xFF2538C1.toInt()
 
     /** Wallpaper-derived accent, refreshed on every activity create. */
     @Volatile
@@ -23,9 +24,9 @@ object UiTheme {
 
     /** Must be called before the activity's setContentView. */
     fun apply(activity: Activity) {
-        loadWallpaperAccent(activity)
         val isSystemNight = (activity.resources.configuration.uiMode and
             Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+        loadWallpaperAccent(activity, isSystemNight)
         activity.setTheme(if (isSystemNight) R.style.AppTheme_Dark else R.style.AppTheme)
 
         val w = activity.window
@@ -40,20 +41,27 @@ object UiTheme {
         }
     }
 
-    /** Picks the wallpaper's dominant color, normalised to a usable accent. */
-    private fun loadWallpaperAccent(activity: Activity) {
+    /**
+     * Picks the wallpaper's dominant color, normalised to a usable accent.
+     * On the light scrim the accent must be dark to contrast; on the dark
+     * scrim it must be bright.
+     */
+    private fun loadWallpaperAccent(activity: Activity, night: Boolean) {
+        val fallback = if (night) FALLBACK_ACCENT_BRIGHT else FALLBACK_ACCENT_DEEP
         try {
             val colors = WallpaperManager.getInstance(activity)
-                .getWallpaperColors(WallpaperManager.FLAG_SYSTEM) ?: return
+                .getWallpaperColors(WallpaperManager.FLAG_SYSTEM) ?: run {
+                accent = fallback; return
+            }
             val hsv = FloatArray(3)
             Color.colorToHSV(colors.primaryColor.toArgb(), hsv)
-            // Keep the wallpaper's hue; force visible saturation and a light
-            // value so the accent reads on both scrims.
-            hsv[1] = hsv[1].coerceIn(0.35f, 0.85f)
-            hsv[2] = 0.86f
+            // Keep the wallpaper's hue; force visible saturation and a value
+            // tuned to the active scrim.
+            hsv[1] = hsv[1].coerceIn(0.45f, 0.85f)
+            hsv[2] = if (night) 0.86f else 0.40f
             accent = Color.HSVToColor(hsv)
         } catch (_: Exception) {
-            accent = FALLBACK_ACCENT
+            accent = fallback
         }
     }
 }
