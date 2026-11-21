@@ -68,17 +68,17 @@ class TerminalRow(context: Context) : LinearLayout(context) {
     fun setRow(
         title: String,
         subtitle: String?,
-        checked: Boolean,
+        initial: Boolean,
         accent: Int,
         subText: Int,
         onToggle: (Boolean) -> Unit,
     ) {
-        this.checked = checked
+        this.checked = initial
         keyView.text = title
         setTextColorOf(subtitleView, subText)
         setTextColorOf(leaderView, applyAlpha(subText, 0.4f))
         subtitleView.text = subtitle
-        statusView.setTextColor(if (checked) accent else subText)
+        statusView.setTextColor(if (initial) accent else subText)
 
         setOnClickListener {
             checked = !checked

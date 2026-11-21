@@ -14,7 +14,7 @@ import android.view.WindowManager
  */
 object UiTheme {
     /** Fallback accent: the RR icon lavender. */
-    private const val FALLBACK_ACCENT = -13397296 // 0xFFB0B8F0
+    private val FALLBACK_ACCENT = 0xFFB0B8F0.toInt() // the RR icon lavender
 
     /** Wallpaper-derived accent, refreshed on every activity create. */
     @Volatile
@@ -46,7 +46,7 @@ object UiTheme {
             val colors = WallpaperManager.getInstance(activity)
                 .getWallpaperColors(WallpaperManager.FLAG_SYSTEM) ?: return
             val hsv = FloatArray(3)
-            Color.colorToHSV(colors.primaryColor, hsv)
+            Color.colorToHSV(colors.primaryColor.toArgb(), hsv)
             // Keep the wallpaper's hue; force visible saturation and a light
             // value so the accent reads on both scrims.
             hsv[1] = hsv[1].coerceIn(0.35f, 0.85f)
