@@ -12,6 +12,7 @@ import android.text.TextPaint
 import android.text.style.ForegroundColorSpan
 import android.text.style.TypefaceSpan
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
