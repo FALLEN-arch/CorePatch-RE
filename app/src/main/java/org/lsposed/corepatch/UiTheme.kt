@@ -19,7 +19,7 @@ object UiTheme {
 
     /** Wallpaper-derived accent, refreshed on every activity create. */
     @Volatile
-    var accent: Int = FALLBACK_ACCENT
+    var accent: Int = FALLBACK_ACCENT_BRIGHT
         private set
 
     /** Must be called before the activity's setContentView. */
