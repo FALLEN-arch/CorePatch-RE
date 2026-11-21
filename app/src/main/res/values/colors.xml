@@ -1,6 +1,8 @@
 <resources>
-    <!-- Accent derived from the launcher icon background (#ACB6F1, hue 231°):
-         same hue and saturation, darkened to lightness 0.45 for 8.6:1
-         contrast on the light action bar. -->
-    <color name="title_accent">#2139C4</color>
+    <!-- Palette from the launcher icon (main background #B0B8F0, hue 232°,
+         sat 0.68). The accent is the background's own hue/saturation
+         darkened to lightness 0.45 for 8.7:1 contrast on the light theme. -->
+    <color name="title_accent">#2538C1</color>
+    <!-- Dark navy from the icon's outlines (#383850), 11.4:1 on white. -->
+    <color name="text_navy">#383850</color>
 </resources>
