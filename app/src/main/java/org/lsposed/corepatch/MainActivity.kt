@@ -175,7 +175,7 @@ class MainActivity : Activity() {
                 start()
             }
         } else {
-            bar.translationX = targetX
+            bar.translationX = targetX.toFloat()
             bar.layoutParams.width = targetWidth
         }
     }
