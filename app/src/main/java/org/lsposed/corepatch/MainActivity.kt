@@ -198,7 +198,6 @@ class MainActivity : Activity() {
 
         addSection(
             getString(R.string.section_appearance),
-            badge = "!",
             appearance.map { (label, value) ->
                 ListItem.Choice(
                     title = label,
@@ -209,7 +208,8 @@ class MainActivity : Activity() {
                         recreate()
                     },
                 )
-            }
+            },
+            badge = "!",
         )
 
         setContentView(scroll)
