@@ -9,10 +9,8 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ForegroundColorSpan
-import android.text.style.ImageSpan
 import android.text.style.TypefaceSpan
 import android.view.Gravity
-import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
@@ -21,9 +19,8 @@ import android.widget.ScrollView
 import android.widget.TextView
 import org.lsposed.corepatch.App.Companion.mService
 import org.lsposed.corepatch.App.Companion.reloadListener
-import org.lsposed.corepatch.data.ListItem
 import org.lsposed.corepatch.data.SwitchData
-import org.lsposed.corepatch.ui.CustomSwitchLayout
+import org.lsposed.corepatch.ui.TerminalRow
 import org.lsposed.corepatch.ui.dp
 import org.lsposed.corepatch.ui.themeColor
 
@@ -51,7 +48,7 @@ class MainActivity : Activity() {
 
     /** Guidance state shown when the Xposed service is not connected. */
     private fun unavailableView(): LinearLayout {
-        val accent = themeColor(R.attr.accentColor)
+        val accent = UiTheme.accent
         return LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER
@@ -67,8 +64,8 @@ class MainActivity : Activity() {
             })
             addView(TextView(this@MainActivity).apply {
                 setText(R.string.xposed_service_unavailable)
-                typeface = resources.getFont(R.font.montserrat_semibold)
-                setTextSize(18f)
+                typeface = resources.getFont(R.font.jetbrainsmono_bold)
+                setTextSize(16f)
                 gravity = Gravity.CENTER
                 layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
                     bottomMargin = 8.dp
@@ -77,7 +74,8 @@ class MainActivity : Activity() {
             addView(TextView(this@MainActivity).apply {
                 setText(R.string.xposed_service_unavailable_summary)
                 setTextColor(themeColor(R.attr.subTextColor))
-                setTextSize(14f)
+                typeface = resources.getFont(R.font.jetbrainsmono_regular)
+                setTextSize(13f)
                 gravity = Gravity.CENTER
                 layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
             })
@@ -85,84 +83,38 @@ class MainActivity : Activity() {
     }
 
     private fun loadPrefs() {
-        val bypassDowngrade = SwitchData(
-            getString(R.string.bypass_downgrade), getString(R.string.bypass_downgrade_summary), Config.BYPASS_DOWNGRADE
-        )
-        val bypassMinSdk = SwitchData(
-            getString(R.string.bypass_min_sdk), getString(R.string.bypass_min_sdk_summary), Config.BYPASS_MIN_SDK
-        )
-        val bypassVerification = SwitchData(
-            getString(R.string.bypass_verification), getString(R.string.bypass_verification_summary), Config.BYPASS_VERIFICATION
-        )
-        val bypassResourceArscRestrictions = SwitchData(
-            getString(R.string.bypass_resource_arsc_restrictions),
-            getString(R.string.bypass_resource_arsc_restrictions_summary),
-            Config.BYPASS_RESOURCE_ARSC_RESTRICTIONS
-        )
-        val bypassDigest = SwitchData(
-            getString(R.string.bypass_digest), getString(R.string.bypass_digest_summary), Config.BYPASS_DIGEST
-        )
-        val bypassExactSignatureMatch = SwitchData(
-            getString(R.string.bypass_exact_signature_match), getString(R.string.bypass_exact_signature_match_summary), Config.BYPASS_EXACT_SIGNATURE_MATCH
-        )
-        val usePreviousSignatures = SwitchData(
-            getString(R.string.use_previous_signatures), getString(R.string.use_previous_signatures_summary), Config.USE_PREVIOUS_SIGNATURES,
-            if (isMiui()) {
-                getString(R.string.miui_usepresig_warn) + "\n\n" + getString(R.string.use_previous_signatures_warning)
-            } else {
-                getString(R.string.use_previous_signatures_warning)
-            }
-        )
-        val allowHiddenApisForSystemApps = SwitchData(
-            getString(R.string.allow_hidden_apis_for_system_apps),
-            getString(R.string.allow_hidden_apis_for_system_apps_summary),
-            Config.ALLOW_HIDDEN_APIS_FOR_SYSTEM_APPS
-        )
-        val bypassSharedUser = SwitchData(
-            getString(R.string.bypass_shared_user), getString(R.string.bypass_shared_user_summary), Config.BYPASS_SHARED_USER
-        )
-        val disableVerificationAgent = SwitchData(
-            getString(R.string.disable_verification_agent), getString(R.string.disable_verification_agent_summary), Config.DISABLE_VERIFICATION_AGENT
-        )
-        val disableDeveloperVerification = SwitchData(
-            getString(R.string.disable_developer_verification),
-            getString(R.string.disable_developer_verification_summary),
-            Config.DISABLE_DEVELOPER_VERIFICATION
-        )
-        val bypassBlock = SwitchData(
-            getString(R.string.bypass_block), getString(R.string.bypass_block_summary), Config.BYPASS_BLOCK
-        )
-
-        val sections = listOf(
+        val rows = listOf(
             getString(R.string.section_installation) to listOf(
-                bypassDowngrade,
-                bypassMinSdk,
-                bypassResourceArscRestrictions,
-                bypassSharedUser,
+                SwitchData(getString(R.string.bypass_downgrade), getString(R.string.bypass_downgrade_summary), Config.BYPASS_DOWNGRADE),
+                SwitchData(getString(R.string.bypass_min_sdk), getString(R.string.bypass_min_sdk_summary), Config.BYPASS_MIN_SDK),
+                SwitchData(getString(R.string.bypass_resource_arsc_restrictions), getString(R.string.bypass_resource_arsc_restrictions_summary), Config.BYPASS_RESOURCE_ARSC_RESTRICTIONS),
+                SwitchData(getString(R.string.bypass_shared_user), getString(R.string.bypass_shared_user_summary), Config.BYPASS_SHARED_USER),
             ),
             getString(R.string.section_signature_checks) to listOf(
-                bypassVerification,
-                bypassDigest,
-                bypassExactSignatureMatch,
-                usePreviousSignatures,
+                SwitchData(getString(R.string.bypass_verification), getString(R.string.bypass_verification_summary), Config.BYPASS_VERIFICATION),
+                SwitchData(getString(R.string.bypass_digest), getString(R.string.bypass_digest_summary), Config.BYPASS_DIGEST),
+                SwitchData(getString(R.string.bypass_exact_signature_match), getString(R.string.bypass_exact_signature_match_summary), Config.BYPASS_EXACT_SIGNATURE_MATCH),
+                SwitchData(
+                    getString(R.string.use_previous_signatures), getString(R.string.use_previous_signatures_summary), Config.USE_PREVIOUS_SIGNATURES,
+                    if (isMiui()) {
+                        getString(R.string.miui_usepresig_warn) + "\n\n" + getString(R.string.use_previous_signatures_warning)
+                    } else {
+                        getString(R.string.use_previous_signatures_warning)
+                    }
+                ),
             ),
             getString(R.string.section_verification_services) to listOf(
-                disableVerificationAgent,
-                disableDeveloperVerification,
-                bypassBlock,
+                SwitchData(getString(R.string.disable_verification_agent), getString(R.string.disable_verification_agent_summary), Config.DISABLE_VERIFICATION_AGENT),
+                SwitchData(getString(R.string.disable_developer_verification), getString(R.string.disable_developer_verification_summary), Config.DISABLE_DEVELOPER_VERIFICATION),
+                SwitchData(getString(R.string.bypass_block), getString(R.string.bypass_block_summary), Config.BYPASS_BLOCK),
             ),
             getString(R.string.section_system_behavior) to listOf(
-                allowHiddenApisForSystemApps,
+                SwitchData(getString(R.string.allow_hidden_apis_for_system_apps), getString(R.string.allow_hidden_apis_for_system_apps_summary), Config.ALLOW_HIDDEN_APIS_FOR_SYSTEM_APPS),
             ),
         )
 
-        // Section header icons, tinted at render time.
-        val iconsByTitle = mapOf(
-            R.string.section_installation to R.drawable.ic_sec_install,
-            R.string.section_signature_checks to R.drawable.ic_sec_signature,
-            R.string.section_verification_services to R.drawable.ic_sec_verification,
-            R.string.section_system_behavior to R.drawable.ic_sec_system,
-        ).entries.associate { getString(it.key) to it.value }
+        val accent = UiTheme.accent
+        val subText = themeColor(R.attr.subTextColor)
 
         val scroll = ScrollView(this).apply {
             fitsSystemWindows = true
@@ -173,83 +125,54 @@ class MainActivity : Activity() {
         }
         scroll.addView(page)
 
-        fun addSection(title: String, rows: List<ListItem>) {
-            page.addView(sectionHeader(title, iconsByTitle[title] ?: 0))
+        fun addSection(title: String, section: List<SwitchData>) {
+            page.addView(sectionHeader(title, accent))
             val card = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
                 background = getDrawable(R.drawable.card_bg)
             }
-            rows.forEach { card.addView(bindRow(it)) }
+            section.forEach { data ->
+                card.addView(TerminalRow(this).apply {
+                    setRow(data.title, data.description, Config.getConfig(data.key), accent, subText) { isChecked ->
+                        Config.setConfig(data.key, isChecked)
+                        if (isChecked && data.warning != null) {
+                            AlertDialog.Builder(this@MainActivity)
+                                .setMessage(data.warning)
+                                .setPositiveButton(android.R.string.ok, null)
+                                .show()
+                        }
+                    }
+                })
+            }
             page.addView(card)
         }
 
-        sections.forEach { (header, switches) ->
-            addSection(header, switches.map { ListItem.Switch(it) })
-        }
+        rows.forEach { (header, section) -> addSection(header, section) }
 
         setContentView(scroll)
     }
 
-    /** Accent-colored section header with icon, above its card. */
-    private fun sectionHeader(title: String, icon: Int): TextView {
-        val header = TextView(this).apply {
-            typeface = resources.getFont(R.font.montserrat_semibold)
-            setTextSize(14f)
-            letterSpacing = 0.08f
-            setTextColor(themeColor(R.attr.accentColor))
+    /** ASCII section rule above each card: `── SIGNATURE CHECKS` */
+    private fun sectionHeader(title: String, accent: Int): TextView {
+        return TextView(this).apply {
+            typeface = resources.getFont(R.font.jetbrainsmono_medium)
+            setTextSize(12f)
+            letterSpacing = 0.1f
+            setTextColor(accent)
             setPadding(20.dp, 24.dp, 20.dp, 8.dp)
+            text = "── ${title.uppercase()}"
         }
-        if (icon != 0) {
-            val iconSize = 18.dp
-            val drawable = getDrawable(icon)!!.apply {
-                setTint(themeColor(R.attr.accentColor))
-                setBounds(0, 0, iconSize, iconSize)
-            }
-            val text = SpannableString("\u00a0 " + title).apply {
-                setSpan(ImageSpan(drawable, ImageSpan.ALIGN_CENTER), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
-            header.text = text
-        } else {
-            header.text = title
-        }
-        return header
-    }
-
-    /** Builds a row view for a list item (toggle). */
-    private fun bindRow(item: ListItem): CustomSwitchLayout {
-        val view = CustomSwitchLayout(this)
-        when (item) {
-            is ListItem.Switch -> {
-                val data = item.data
-                view.titleView.text = data.title
-                view.subtitleView.text = data.description
-                view.setRowDescription(data.title, data.description)
-                view.setOnCheckListener {}
-                view.switchView.isChecked = Config.getConfig(data.key)
-                view.setOnCheckListener { isChecked ->
-                    Config.setConfig(data.key, isChecked)
-                    if (isChecked && data.warning != null) {
-                        AlertDialog.Builder(this)
-                            .setMessage(data.warning)
-                            .setPositiveButton(android.R.string.ok, null)
-                            .show()
-                    }
-                }
-            }
-            is ListItem.Header -> Unit // headers are rendered by addSection
-        }
-        return view
     }
 
     private fun styledTitle(): CharSequence {
-        val base = getString(R.string.app_name)
-        return SpannableString(base).apply {
+        // "RR▌" — the block is the terminal cursor.
+        return SpannableString("RR▌").apply {
             setSpan(
-                BrandTypefaceSpan(resources.getFont(R.font.montserrat_bold)),
+                BrandTypefaceSpan(resources.getFont(R.font.jetbrainsmono_bold)),
                 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             setSpan(
-                ForegroundColorSpan(themeColor(R.attr.accentColor)),
+                ForegroundColorSpan(UiTheme.accent),
                 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }

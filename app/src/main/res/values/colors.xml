@@ -1,17 +1,16 @@
 <resources>
-    <!-- Palette from the launcher icon (main background #B0B8F0, hue 232°,
-         sat 0.68). The accent is the background's own hue/saturation
-         darkened to lightness 0.45 for 8.7:1 contrast on the light theme. -->
-    <color name="title_accent">#2538C1</color>
+    <!-- Terminal-glass palette. Accents derive from the wallpaper at runtime
+         (UiTheme), falling back to the RR icon lavender #B0B8F0. The static
+         values below are the fallback scrim set. -->
+    <color name="title_accent">#B0B8F0</color>
     <!-- Dark navy from the icon's outlines (#383850), 11.4:1 on white. -->
     <color name="text_navy">#383850</color>
-    <!-- Dark-theme variants: the icon's own lavender as accent (6.6:1 on
-         #303030), soft lavender-grey body text. -->
     <color name="accent_on_dark">#B0B8F0</color>
     <color name="subtext_on_dark">#C3C6DE</color>
-    <!-- Surface hierarchy per theme (page < card). -->
-    <color name="page_light">#F2F3FA</color>
-    <color name="card_light">#FFFFFF</color>
-    <color name="page_dark">#14151C</color>
-    <color name="card_dark">#1F2130</color>
+    <!-- Translucent page scrims: the wallpaper shows through (blurred on
+         Android 12+). Cards are lighter overlays on top. -->
+    <color name="page_light">#E8F2F3FA</color>
+    <color name="card_light">#8CFFFFFF</color>
+    <color name="page_dark">#D914151C</color>
+    <color name="card_dark">#1FFFFFFF</color>
 </resources>

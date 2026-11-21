@@ -1,5 +1,5 @@
 <resources>
-    <!-- Action bars blend into the page (no band, no shadow). -->
+    <!-- Action bars blend into the page scrim (no band, no shadow). -->
     <style name="RRActionBar.Light" parent="android:Widget.DeviceDefault.Light.ActionBar.Solid">
         <item name="android:background">@color/page_light</item>
         <item name="android:elevation">0dp</item>
@@ -9,14 +9,16 @@
         <item name="android:elevation">0dp</item>
     </style>
 
-    <!-- Light (default, name kept for the manifest). -->
+    <!-- Terminal glass: the window shows the wallpaper through a translucent
+         scrim; UiTheme blurs it on Android 12+. -->
     <style name="AppTheme" parent="android:style/Theme.DeviceDefault.Light">
+        <item name="android:windowShowWallpaper">true</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:fontFamily">@font/montserrat_regular</item>
-        <item name="android:colorAccent">@color/title_accent</item>
-        <item name="android:statusBarColor">@color/page_light</item>
-        <item name="android:navigationBarColor">@color/page_light</item>
         <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:fontFamily">@font/jetbrainsmono_regular</item>
+        <item name="android:colorAccent">@color/title_accent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowBackground">@color/page_light</item>
         <item name="accentColor">@color/title_accent</item>
         <item name="subTextColor">@color/text_navy</item>
@@ -25,14 +27,14 @@
         <item name="android:actionBarStyle">@style/RRActionBar.Light</item>
     </style>
 
-    <!-- Dark: tonal dark surfaces, not flat grey. -->
     <style name="AppTheme.Dark" parent="android:style/Theme.DeviceDefault">
+        <item name="android:windowShowWallpaper">true</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:fontFamily">@font/montserrat_regular</item>
-        <item name="android:colorAccent">@color/accent_on_dark</item>
-        <item name="android:statusBarColor">@color/page_dark</item>
-        <item name="android:navigationBarColor">@color/page_dark</item>
         <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:fontFamily">@font/jetbrainsmono_regular</item>
+        <item name="android:colorAccent">@color/accent_on_dark</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowBackground">@color/page_dark</item>
         <item name="accentColor">@color/accent_on_dark</item>
         <item name="subTextColor">@color/subtext_on_dark</item>
