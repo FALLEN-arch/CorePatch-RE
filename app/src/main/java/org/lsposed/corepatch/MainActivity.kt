@@ -67,7 +67,7 @@ class MainActivity : Activity() {
             })
             addView(TextView(this@MainActivity).apply {
                 setText(R.string.xposed_service_unavailable)
-                typeface = getFont(R.font.montserrat_semibold)
+                typeface = resources.getFont(R.font.montserrat_semibold)
                 setTextSize(18f)
                 gravity = Gravity.CENTER
                 layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
@@ -217,7 +217,7 @@ class MainActivity : Activity() {
     /** Accent-colored section header with icon, above its card. */
     private fun sectionHeader(title: String, icon: Int): TextView {
         val header = TextView(this).apply {
-            typeface = getFont(R.font.montserrat_semibold)
+            typeface = resources.getFont(R.font.montserrat_semibold)
             setTextSize(14f)
             letterSpacing = 0.08f
             setTextColor(themeColor(R.attr.accentColor))
