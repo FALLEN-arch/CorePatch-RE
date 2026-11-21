@@ -182,8 +182,8 @@ class MainActivity : Activity() {
         }
         scroll.addView(page)
 
-        fun addSection(title: String, rows: List<ListItem>) {
-            page.addView(sectionHeader(title, iconsByTitle[title] ?: 0))
+        fun addSection(title: String, rows: List<ListItem>, badge: String? = null) {
+            page.addView(sectionHeader(title, iconsByTitle[title] ?: 0, badge))
             val card = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
                 background = getDrawable(R.drawable.card_bg)
@@ -198,6 +198,7 @@ class MainActivity : Activity() {
 
         addSection(
             getString(R.string.section_appearance),
+            badge = "!",
             appearance.map { (label, value) ->
                 ListItem.Choice(
                     title = label,
@@ -214,8 +215,12 @@ class MainActivity : Activity() {
         setContentView(scroll)
     }
 
-    /** Accent-colored section header with icon, above its card. */
-    private fun sectionHeader(title: String, icon: Int): TextView {
+    /**
+     * Accent-colored section header with icon, above its card.
+     * [badge] prefixes the title (e.g. "!" marks the Appearance section
+     * as separate from the module's core function).
+     */
+    private fun sectionHeader(title: String, icon: Int, badge: String? = null): TextView {
         val header = TextView(this).apply {
             typeface = resources.getFont(R.font.montserrat_semibold)
             setTextSize(14f)
@@ -223,18 +228,28 @@ class MainActivity : Activity() {
             setTextColor(themeColor(R.attr.accentColor))
             setPadding(20.dp, 24.dp, 20.dp, 8.dp)
         }
+        val prefix = badge?.let { "$it  " } ?: ""
         if (icon != 0) {
             val iconSize = 18.dp
             val drawable = getDrawable(icon)!!.apply {
                 setTint(themeColor(R.attr.accentColor))
                 setBounds(0, 0, iconSize, iconSize)
             }
-            val text = SpannableString("  ${title}").apply {
-                setSpan(ImageSpan(drawable, ImageSpan.ALIGN_CENTER), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            val text = SpannableString(prefix + "\u00a0 " + title).apply {
+                // Bold the badge so the separator reads before the icon/title.
+                if (badge != null) {
+                    setSpan(
+                        BrandTypefaceSpan(resources.getFont(R.font.montserrat_bold)),
+                        0, badge.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+                // The icon replaces the space right after the prefix.
+                val iconStart = prefix.length
+                setSpan(ImageSpan(drawable, ImageSpan.ALIGN_CENTER), iconStart, iconStart + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
             header.text = text
         } else {
-            header.text = title
+            header.text = prefix + title
         }
         return header
     }
@@ -267,7 +282,14 @@ class MainActivity : Activity() {
                 view.setOnCheckListener {}
                 view.switchView.isChecked = item.selected
                 view.setOnCheckListener { isChecked ->
-                    if (isChecked) item.onSelect()
+                    if (isChecked) {
+                        item.onSelect()
+                    } else {
+                        // The active theme can't be switched off; snap back to checked.
+                        view.switchView.setOnCheckedChangeListener(null)
+                        view.switchView.isChecked = true
+                        view.setOnCheckListener { again -> if (again) item.onSelect() }
+                    }
                 }
             }
             is ListItem.Header -> Unit // headers are rendered by addSection

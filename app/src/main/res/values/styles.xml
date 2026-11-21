@@ -5,6 +5,8 @@
         <item name="android:fontFamily">@font/montserrat_regular</item>
         <item name="android:colorAccent">@color/title_accent</item>
         <item name="android:statusBarColor">@color/page_light</item>
+        <item name="android:navigationBarColor">@color/page_light</item>
+        <item name="android:windowLightNavigationBar">true</item>
         <item name="android:windowBackground">@color/page_light</item>
         <item name="accentColor">@color/title_accent</item>
         <item name="subTextColor">@color/text_navy</item>
@@ -18,6 +20,8 @@
         <item name="android:fontFamily">@font/montserrat_regular</item>
         <item name="android:colorAccent">@color/accent_on_dark</item>
         <item name="android:statusBarColor">@color/page_dark</item>
+        <item name="android:navigationBarColor">@color/page_dark</item>
+        <item name="android:windowLightNavigationBar">false</item>
         <item name="android:windowBackground">@color/page_dark</item>
         <item name="accentColor">@color/accent_on_dark</item>
         <item name="subTextColor">@color/subtext_on_dark</item>
@@ -29,6 +33,7 @@
     <style name="AppTheme.Amoled" parent="AppTheme.Dark">
         <item name="android:statusBarColor">@color/amoled_black</item>
         <item name="android:navigationBarColor">@color/amoled_black</item>
+        <item name="android:windowLightNavigationBar">false</item>
         <item name="android:windowBackground">@color/amoled_black</item>
         <item name="pageBackgroundColor">@color/amoled_black</item>
         <item name="cardColor">@color/card_amoled</item>
