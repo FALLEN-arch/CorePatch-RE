@@ -141,24 +141,20 @@ class MainActivity : Activity() {
     }
 
     /**
-     * Builds the action bar title: the whole string set in Space Grotesk Bold
-     * (matching the launcher icon's modern-geometric vibe), with the "-RE"
-     * suffix highlighted in the icon's periwinkle accent.
+     * Builds the action bar title: the app name set in Space Grotesk Bold
+     * and fully colored in the icon's periwinkle accent.
      */
     private fun styledTitle(): CharSequence {
         val base = getString(R.string.app_name)
-        val prefix = base.removeSuffix("-RE")
         return SpannableString(base).apply {
             setSpan(
                 BrandTypefaceSpan(resources.getFont(R.font.space_grotesk_bold)),
                 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            if (prefix.length != base.length) {
-                setSpan(
-                    ForegroundColorSpan(getColor(R.color.title_accent)),
-                    prefix.length, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
+            setSpan(
+                ForegroundColorSpan(getColor(R.color.title_accent)),
+                0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
     }
 
