@@ -37,7 +37,7 @@ class TerminalRow(context: Context) : LinearLayout(context) {
 
     private val subtitleView = TextView(context).apply {
         typeface = context.resources.getFont(R.font.jetbrainsmono_regular)
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
     }
 
     private var checked = false
