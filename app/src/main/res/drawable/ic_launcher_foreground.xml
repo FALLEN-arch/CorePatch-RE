@@ -1,0 +1,27 @@
+<!--
+    Icon foreground: "RR" monogram in the icon palette's dark navy
+    (#383850), set in the actual Montserrat Bold 'R' glyph outline —
+    the same typeface as the app title.
+
+    Glyph source: Montserrat-Bold.ttf 'R', unitsPerEm 1000, bbox
+    x 83..703, y 0..700 (y-up). Rendered at scale 0.036 with y flipped
+    (negative scaleY), baseline at y=66.6, letters 22.3dp wide with a
+    4dp gap: R1 x 29.7..52.0, R2 x 56.0..78.3. Corner distance from
+    center 27.4dp — inside the 66dp adaptive-icon safe zone.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <group
+        android:scaleX="0.036" android:scaleY="-0.036"
+        android:translateX="26.69" android:translateY="66.6">
+        <path android:fillColor="#FF383850"
+            android:pathData="M83,0 V700 H382 Q528,700 609,632 Q690,564 690,446 Q690,368 652.5,311.5 Q615,255 547,225 L703,0 H529 L394,195 Q390,195 386,195 H245 V0 Z M245,324 H377 Q451,324 488.5,356.5 Q526,389 526,446 Q526,504 488.5,536 Q451,568 377,568 H245 Z"/>
+    </group>
+    <group
+        android:scaleX="0.036" android:scaleY="-0.036"
+        android:translateX="53.01" android:translateY="66.6">
+        <path android:fillColor="#FF383850"
+            android:pathData="M83,0 V700 H382 Q528,700 609,632 Q690,564 690,446 Q690,368 652.5,311.5 Q615,255 547,225 L703,0 H529 L394,195 Q390,195 386,195 H245 V0 Z M245,324 H377 Q451,324 488.5,356.5 Q526,389 526,446 Q526,504 488.5,536 Q451,568 377,568 H245 Z"/>
+    </group>
+</vector>
