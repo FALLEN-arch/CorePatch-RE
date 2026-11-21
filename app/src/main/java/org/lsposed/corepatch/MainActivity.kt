@@ -2,12 +2,13 @@ package org.lsposed.corepatch
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ComponentName
-import android.content.pm.PackageManager
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.Gravity
-import android.view.Menu
-import android.view.MenuItem
 import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
 import android.widget.ListView
@@ -20,6 +21,7 @@ import org.lsposed.corepatch.data.SwitchData
 class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        title = styledTitle()
         reloadListener = {
             runOnUiThread {
                 showContent()
@@ -124,40 +126,21 @@ class MainActivity : Activity() {
         setContentView(listView)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menu.add(Menu.NONE, R.string.hide_launcher_icon, Menu.NONE, R.string.hide_launcher_icon).apply {
-            isCheckable = true
-            setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER)
-        }
-        return true
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        val component = ComponentName(this, "$packageName.LauncherAlias")
-        menu.findItem(R.string.hide_launcher_icon).isChecked =
-            packageManager.getComponentEnabledSetting(component) ==
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-        return super.onPrepareOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.string.hide_launcher_icon) {
-            val component = ComponentName(this, "$packageName.LauncherAlias")
-            val hidden = packageManager.getComponentEnabledSetting(component) ==
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-            packageManager.setComponentEnabledSetting(
-                component,
-                if (hidden) {
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-                } else {
-                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED
-                },
-                PackageManager.DONT_KILL_APP
+    /**
+     * Builds the action bar title: "CorePatch" in the default text style and
+     * the "-RE" suffix highlighted in the icon's periwinkle accent.
+     */
+    private fun styledTitle(): CharSequence {
+        val base = getString(R.string.app_name)
+        val prefix = base.removeSuffix("-RE")
+        if (prefix.length == base.length) return base
+        return SpannableString(base).apply {
+            setSpan(StyleSpan(Typeface.BOLD), 0, prefix.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(
+                ForegroundColorSpan(getColor(R.color.title_accent)),
+                prefix.length, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            item.isChecked = !hidden
-            return true
         }
-        return super.onOptionsItemSelected(item)
     }
 
     @SuppressLint("PrivateApi")

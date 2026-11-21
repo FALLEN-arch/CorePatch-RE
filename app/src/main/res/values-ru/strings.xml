@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Патч ядра N</string>
     <string name="xposed_service_unavailable">Не удалось подключиться к службе Xposed</string>
     <string name="xposed_service_unavailable_summary">Убедитесь, что фреймворк Xposed запущен, а этот модуль включён.</string>
     <string name="bypass_downgrade">Разрешить понижать версию.</string>
@@ -29,5 +28,4 @@
     <string name="bypass_block">Обойти блокировку</string>
     <string name="bypass_block_summary">Обойти список блокировок на некоторых устройствах, например Nothing Phone</string>
     <string name="module_description">Модификация службы управления пакетами</string>
-    <string name="hide_launcher_icon">Скрыть значок запуска</string>
 </resources>

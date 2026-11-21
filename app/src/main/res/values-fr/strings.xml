@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Correctif du noyau N</string>
     <string name="xposed_service_unavailable">Impossible de se connecter au service Xposed</string>
     <string name="xposed_service_unavailable_summary">Assurez-vous que le framework Xposed est en cours d’exécution et que ce module est activé.</string>
     <string name="bypass_downgrade">Permettre la rétrogradation</string>
@@ -27,5 +26,4 @@
     <string name="bypass_block">Contourner le blocage</string>
     <string name="bypass_block_summary">Contourner la liste de blocage sur certains appareils comme le Nothing Phone</string>
     <string name="module_description">Modification du service de gestion des paquets</string>
-    <string name="hide_launcher_icon">Masquer l’icône du lanceur</string>
 </resources>

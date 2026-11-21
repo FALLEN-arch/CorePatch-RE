@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Çekirdek Yaması N</string>
     <string name="xposed_service_unavailable">Xposed hizmetine bağlanılamıyor</string>
     <string name="xposed_service_unavailable_summary">Xposed altyapısının çalıştığından ve bu modülün etkinleştirildiğinden emin olun.</string>
     <string name="bypass_downgrade">Sürüm düşürmeye izin ver</string>
@@ -27,5 +26,4 @@
     <string name="bypass_block">Engeli atla</string>
     <string name="bypass_block_summary">Nothing Phone gibi bazı cihazlardaki engelleme listesini atlar.</string>
     <string name="module_description">Paket Yöneticisi Hizmeti değişikliği</string>
-    <string name="hide_launcher_icon">Başlatıcı simgesini gizle</string>
 </resources>

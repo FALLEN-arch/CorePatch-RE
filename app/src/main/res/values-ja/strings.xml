@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">コアパッチ N</string>
     <string name="xposed_service_unavailable">Xposed サービスに接続できません</string>
     <string name="xposed_service_unavailable_summary">Xposed フレームワークが実行中で、このモジュールが有効になっていることを確認してください。</string>
     <string name="bypass_downgrade">ダウングレードを許可する</string>
@@ -27,5 +26,4 @@
     <string name="bypass_block">ブロックをバイパスする</string>
     <string name="bypass_block_summary">Nothing Phone などの一部のデバイスのブロックリストをバイパスします。</string>
     <string name="module_description">パッケージ管理サービスの変更</string>
-    <string name="hide_launcher_icon">ランチャーアイコンを非表示</string>
 </resources>

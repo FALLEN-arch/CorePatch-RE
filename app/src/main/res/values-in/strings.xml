@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Patch Inti N</string>
     <string name="xposed_service_unavailable">Tidak dapat terhubung ke layanan Xposed</string>
     <string name="xposed_service_unavailable_summary">Pastikan framework Xposed berjalan dan modul ini diaktifkan.</string>
     <string name="bypass_downgrade">Izinkan turun versi</string>
@@ -27,5 +26,4 @@
     <string name="bypass_block">Terobos blokiran</string>
     <string name="bypass_block_summary">Terobos daftar blokir dalam beberapa perangkat seperti Nothing Phone</string>
     <string name="module_description">Modifikasi layanan pengelola paket</string>
-    <string name="hide_launcher_icon">Sembunyikan ikon peluncur</string>
 </resources>

@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Patch do Núcleo N</string>
     <string name="xposed_service_unavailable">Não foi possível conectar ao serviço Xposed</string>
     <string name="xposed_service_unavailable_summary">Verifique se o framework Xposed está em execução e se este módulo está ativado.</string>
     <string name="bypass_downgrade">Permitir downgrade</string>
@@ -27,5 +26,4 @@
     <string name="bypass_block">Ignorar bloqueio</string>
     <string name="bypass_block_summary">Ignore a lista de bloqueio em alguns dispositivos, como o Nothing Phone.</string>
     <string name="module_description">Modificação do serviço gerenciador de pacotes</string>
-    <string name="hide_launcher_icon">Ocultar ícone do inicializador</string>
 </resources>

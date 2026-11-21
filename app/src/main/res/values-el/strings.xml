@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Διόρθωση Πυρήνα N</string>
     <string name="xposed_service_unavailable">Αδυναμία σύνδεσης στην υπηρεσία Xposed</string>
     <string name="xposed_service_unavailable_summary">Βεβαιωθείτε ότι το πλαίσιο Xposed εκτελείται και ότι αυτή η μονάδα είναι ενεργοποιημένη.</string>
     <string name="bypass_downgrade">Επιτρεπόμενη υποβάθμιση</string>
@@ -27,5 +26,4 @@
     <string name="bypass_block">Παράκαμψη μπλοκ</string>
     <string name="bypass_block_summary">Παράκαμψη λίστας αποκλεισμού εγκατάστασης σε ορισμένες συσκευές, όπως το Nothing Phone.</string>
     <string name="module_description">Τροποποίηση υπηρεσίας διαχείρισης πακέτων</string>
-    <string name="hide_launcher_icon">Απόκρυψη εικονιδίου εκκίνησης</string>
 </resources>

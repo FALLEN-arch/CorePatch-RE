@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Core Patch N</string>
+    <string name="app_name">CorePatch-RE</string>
     <string name="module_description">Package manager service modifications</string>
     <string name="xposed_service_unavailable">Unable to connect to Xposed service</string>
     <string name="xposed_service_unavailable_summary">Make sure the Xposed framework is running and this module is enabled.</string>
@@ -29,5 +29,4 @@
     <string name="disable_developer_verification_summary">Skip developer identity verification during installation.</string>
     <string name="bypass_block">Bypass installation blocklist</string>
     <string name="bypass_block_summary">Bypass blocklists on devices such as Nothing Phone.</string>
-    <string name="hide_launcher_icon">Hide launcher icon</string>
 </resources>

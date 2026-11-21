@@ -1,0 +1,4 @@
+<resources>
+    <!-- Periwinkle accent pulled from the launcher icon background. -->
+    <color name="title_accent">#5B50CE</color>
+</resources>
