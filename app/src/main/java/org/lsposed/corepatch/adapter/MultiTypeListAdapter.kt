@@ -39,7 +39,7 @@ class MultiTypeListAdapter(private val items: List<ListItem>) : BaseAdapter() {
         return when (val item = items[position]) {
             is ListItem.Header -> {
                 (convertView as? TextView ?: createHeaderView(context)).apply {
-                    text = item.title
+                    text = if (item.icon.isNotEmpty()) "${item.icon}  ${item.title}" else item.title
                 }
             }
             is ListItem.Switch -> {
@@ -66,7 +66,7 @@ class MultiTypeListAdapter(private val items: List<ListItem>) : BaseAdapter() {
 
     private fun createHeaderView(context: Context): TextView = TextView(context).apply {
         typeface = Typeface.create(
-            context.resources.getFont(R.font.space_grotesk_medium), Typeface.NORMAL
+            context.resources.getFont(R.font.jetbrains_mono_medium), Typeface.NORMAL
         )
         setTextColor(context.getColor(R.color.title_accent))
         textSize = 14f

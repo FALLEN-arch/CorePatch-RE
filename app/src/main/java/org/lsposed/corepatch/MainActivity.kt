@@ -128,8 +128,17 @@ class MainActivity : Activity() {
             ),
         )
 
+        // Nerd Font glyphs (FontAwesome range) matching each section.
+        val icons = mapOf(
+            R.string.section_installation to '',           // download
+            R.string.section_signature_checks to '',       // lock
+            R.string.section_verification_services to '',  // shield
+            R.string.section_system_behavior to '',        // cogs
+        )
+
         val items = sections.flatMap { (header, switches) ->
-            listOf(ListItem.Header(header)) + switches.map { ListItem.Switch(it) }
+            val icon = icons.entries.firstOrNull { getString(it.key) == header }?.value?.toString() ?: ""
+            listOf(ListItem.Header(header, icon)) + switches.map { ListItem.Switch(it) }
         }
 
         val adapter = MultiTypeListAdapter(items)
@@ -148,7 +157,7 @@ class MainActivity : Activity() {
         val base = getString(R.string.app_name)
         return SpannableString(base).apply {
             setSpan(
-                BrandTypefaceSpan(resources.getFont(R.font.space_grotesk_bold)),
+                BrandTypefaceSpan(resources.getFont(R.font.jetbrains_mono_bold)),
                 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             setSpan(
