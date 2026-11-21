@@ -4,23 +4,33 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:fontFamily">@font/montserrat_regular</item>
         <item name="android:colorAccent">@color/title_accent</item>
+        <item name="android:statusBarColor">@color/page_light</item>
+        <item name="android:windowBackground">@color/page_light</item>
         <item name="accentColor">@color/title_accent</item>
         <item name="subTextColor">@color/text_navy</item>
+        <item name="pageBackgroundColor">@color/page_light</item>
+        <item name="cardColor">@color/card_light</item>
     </style>
 
-    <!-- Dark: regular dark grey surfaces. -->
+    <!-- Dark: tonal dark surfaces, not flat grey. -->
     <style name="AppTheme.Dark" parent="android:style/Theme.DeviceDefault">
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:fontFamily">@font/montserrat_regular</item>
         <item name="android:colorAccent">@color/accent_on_dark</item>
+        <item name="android:statusBarColor">@color/page_dark</item>
+        <item name="android:windowBackground">@color/page_dark</item>
         <item name="accentColor">@color/accent_on_dark</item>
         <item name="subTextColor">@color/subtext_on_dark</item>
+        <item name="pageBackgroundColor">@color/page_dark</item>
+        <item name="cardColor">@color/card_dark</item>
     </style>
 
-    <!-- AMOLED: pure black surfaces on top of dark. -->
+    <!-- AMOLED: pure black page (user preference), raised card for hierarchy. -->
     <style name="AppTheme.Amoled" parent="AppTheme.Dark">
-        <item name="android:windowBackground">@color/amoled_black</item>
         <item name="android:statusBarColor">@color/amoled_black</item>
         <item name="android:navigationBarColor">@color/amoled_black</item>
+        <item name="android:windowBackground">@color/amoled_black</item>
+        <item name="pageBackgroundColor">@color/amoled_black</item>
+        <item name="cardColor">@color/card_amoled</item>
     </style>
 </resources>

@@ -2,4 +2,6 @@
     <!-- Theme-aware colors resolved by the UI code. -->
     <attr name="accentColor" format="color" />
     <attr name="subTextColor" format="color" />
+    <attr name="pageBackgroundColor" format="color" />
+    <attr name="cardColor" format="color" />
 </resources>

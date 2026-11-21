@@ -12,26 +12,29 @@ class CustomSwitchLayout(context: Context) : CustomViewGroup(context) {
     val titleView = TextView(context).apply {
         setTextAppearance(android.R.style.TextAppearance_Medium)
         typeface = context.resources.getFont(R.font.montserrat_medium)
+        setTextSize(16f)
         layoutParams = MarginLayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-            topMargin = 8.dp
-            leftMargin = 16.dp
-            rightMargin = 16.dp
+            topMargin = 12.dp
+            leftMargin = 12.dp
+            rightMargin = 12.dp
         }
         this@CustomSwitchLayout.addView(this)
     }
     val subtitleView = TextView(context).apply {
         setTextColor(context.themeColor(R.attr.subTextColor))
+        setTextSize(13f)
         layoutParams = MarginLayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
-            leftMargin = 16.dp
-            bottomMargin = 8.dp
-            rightMargin = 16.dp
+            leftMargin = 12.dp
+            bottomMargin = 12.dp
+            rightMargin = 12.dp
         }
         this@CustomSwitchLayout.addView(this)
     }
     val switchView = Switch(context).apply {
+        importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_NO
         layoutParams = MarginLayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
             leftMargin = 8.dp
-            rightMargin = 8.dp
+            rightMargin = 12.dp
         }
         this@CustomSwitchLayout.addView(this)
     }
@@ -40,7 +43,13 @@ class CustomSwitchLayout(context: Context) : CustomViewGroup(context) {
         val outValue = TypedValue()
         context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
         setBackgroundResource(outValue.resourceId)
+        minimumHeight = 56.dp
         setOnClickListener { switchView.toggle() }
+    }
+
+    /** Merges title + subtitle into one TalkBack node on the row. */
+    fun setRowDescription(title: String, subtitle: String?) {
+        contentDescription = if (subtitle.isNullOrEmpty()) title else "$title. $subtitle"
     }
 
     fun setOnCheckListener(listener: (Boolean) -> Unit) {

@@ -1,0 +1,6 @@
+<!-- Section card: rounded surface using the theme's cardColor. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="24dp" />
+    <solid android:color="?attr/cardColor" />
+</shape>

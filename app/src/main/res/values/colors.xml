@@ -10,4 +10,10 @@
     <color name="accent_on_dark">#B0B8F0</color>
     <color name="subtext_on_dark">#C3C6DE</color>
     <color name="amoled_black">#000000</color>
+    <!-- Surface hierarchy per theme (page < card). -->
+    <color name="page_light">#F2F3FA</color>
+    <color name="card_light">#FFFFFF</color>
+    <color name="page_dark">#14151C</color>
+    <color name="card_dark">#1F2130</color>
+    <color name="card_amoled">#14151C</color>
 </resources>

@@ -2,23 +2,29 @@ package org.lsposed.corepatch
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ForegroundColorSpan
+import android.text.style.ImageSpan
 import android.text.style.TypefaceSpan
 import android.view.Gravity
 import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ListView
+import android.widget.ScrollView
 import android.widget.TextView
 import org.lsposed.corepatch.App.Companion.mService
 import org.lsposed.corepatch.App.Companion.reloadListener
-import org.lsposed.corepatch.adapter.MultiTypeListAdapter
 import org.lsposed.corepatch.data.ListItem
 import org.lsposed.corepatch.data.SwitchData
+import org.lsposed.corepatch.ui.CustomSwitchLayout
+import org.lsposed.corepatch.ui.dp
 import org.lsposed.corepatch.ui.themeColor
 
 class MainActivity : Activity() {
@@ -37,25 +43,45 @@ class MainActivity : Activity() {
     private fun showContent() {
         val service = mService
         if (service == null || "system" !in service.scope) {
-            setContentView(LinearLayout(this).apply {
-                orientation = LinearLayout.VERTICAL
-                gravity = Gravity.CENTER
-                fitsSystemWindows = true
-                addView(TextView(this@MainActivity).apply {
-                    layoutParams = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-                    setText(R.string.xposed_service_unavailable)
-                    setTextAppearance(android.R.style.TextAppearance_Medium)
-                    gravity = Gravity.CENTER
-                })
-                addView(TextView(this@MainActivity).apply {
-                    layoutParams = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
-                    setText(R.string.xposed_service_unavailable_summary)
-                    gravity = Gravity.CENTER
-                })
-            })
+            setContentView(unavailableView())
             return
         }
         loadPrefs()
+    }
+
+    /** Guidance state shown when the Xposed service is not connected. */
+    private fun unavailableView(): LinearLayout {
+        val accent = themeColor(R.attr.accentColor)
+        return LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
+            fitsSystemWindows = true
+            setPadding(32.dp, 16.dp, 32.dp, 16.dp)
+            addView(ImageView(this@MainActivity).apply {
+                setImageResource(R.drawable.ic_sec_verification)
+                setColorFilter(accent)
+                layoutParams = LinearLayout.LayoutParams(56.dp, 56.dp).apply {
+                    bottomMargin = 24.dp
+                    gravity = Gravity.CENTER_HORIZONTAL
+                }
+            })
+            addView(TextView(this@MainActivity).apply {
+                setText(R.string.xposed_service_unavailable)
+                typeface = getFont(R.font.montserrat_semibold)
+                setTextSize(18f)
+                gravity = Gravity.CENTER
+                layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT).apply {
+                    bottomMargin = 8.dp
+                }
+            })
+            addView(TextView(this@MainActivity).apply {
+                setText(R.string.xposed_service_unavailable_summary)
+                setTextColor(themeColor(R.attr.subTextColor))
+                setTextSize(14f)
+                gravity = Gravity.CENTER
+                layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+            })
+        }
     }
 
     private fun loadPrefs() {
@@ -131,51 +157,124 @@ class MainActivity : Activity() {
         )
 
         // Section header icons, tinted at render time.
-        val icons = mapOf(
+        val iconsByTitle = mapOf(
             R.string.section_installation to R.drawable.ic_sec_install,
             R.string.section_signature_checks to R.drawable.ic_sec_signature,
             R.string.section_verification_services to R.drawable.ic_sec_verification,
             R.string.section_system_behavior to R.drawable.ic_sec_system,
-        )
+            R.string.section_appearance to R.drawable.ic_sec_theme,
+        ).entries.associate { getString(it.key) to it.value }
 
+        val currentTheme = UiTheme.get(this)
         val appearance = listOf(
             getString(R.string.theme_system) to UiTheme.SYSTEM,
             getString(R.string.theme_light) to UiTheme.LIGHT,
             getString(R.string.theme_dark) to UiTheme.DARK,
             getString(R.string.theme_amoled) to UiTheme.AMOLED,
         )
-        val currentTheme = UiTheme.get(this)
-        val themeSection = listOf(
-            ListItem.Header(getString(R.string.section_appearance), R.drawable.ic_sec_theme)
-        ) + appearance.map { (label, value) ->
-            ListItem.Choice(
-                title = label,
-                description = "",
-                selected = currentTheme == value,
-                onSelect = {
-                    UiTheme.set(this, value)
-                    recreate()
-                },
-            )
+
+        val scroll = ScrollView(this).apply {
+            fitsSystemWindows = true
+        }
+        val page = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(16.dp, 16.dp, 16.dp, 24.dp)
+        }
+        scroll.addView(page)
+
+        fun addSection(title: String, rows: List<ListItem>) {
+            page.addView(sectionHeader(title, iconsByTitle[title] ?: 0))
+            val card = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                background = getDrawable(R.drawable.card_bg)
+            }
+            rows.forEach { card.addView(bindRow(it)) }
+            page.addView(card)
         }
 
-        val items = sections.flatMap { (header, switches) ->
-            val icon = icons.entries.firstOrNull { getString(it.key) == header }?.value ?: 0
-            listOf(ListItem.Header(header, icon)) + switches.map { ListItem.Switch(it) }
-        } + themeSection
+        sections.forEach { (header, switches) ->
+            addSection(header, switches.map { ListItem.Switch(it) })
+        }
 
-        val adapter = MultiTypeListAdapter(items)
+        addSection(
+            getString(R.string.section_appearance),
+            appearance.map { (label, value) ->
+                ListItem.Choice(
+                    title = label,
+                    description = "",
+                    selected = currentTheme == value,
+                    onSelect = {
+                        UiTheme.set(this, value)
+                        recreate()
+                    },
+                )
+            }
+        )
 
-        val listView = ListView(this)
-        listView.adapter = adapter
-        listView.fitsSystemWindows = true
-        setContentView(listView)
+        setContentView(scroll)
     }
 
-    /**
-     * Builds the action bar title: the app name set in Space Grotesk Bold
-     * and fully colored in the icon's periwinkle accent.
-     */
+    /** Accent-colored section header with icon, above its card. */
+    private fun sectionHeader(title: String, icon: Int): TextView {
+        val header = TextView(this).apply {
+            typeface = getFont(R.font.montserrat_semibold)
+            setTextSize(14f)
+            letterSpacing = 0.08f
+            setTextColor(themeColor(R.attr.accentColor))
+            setPadding(20.dp, 24.dp, 20.dp, 8.dp)
+        }
+        if (icon != 0) {
+            val iconSize = 18.dp
+            val drawable = getDrawable(icon)!!.apply {
+                setTint(themeColor(R.attr.accentColor))
+                setBounds(0, 0, iconSize, iconSize)
+            }
+            val text = SpannableString("  ${title}").apply {
+                setSpan(ImageSpan(drawable, ImageSpan.ALIGN_CENTER), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+            header.text = text
+        } else {
+            header.text = title
+        }
+        return header
+    }
+
+    /** Builds a row view for a list item (toggle or theme choice). */
+    private fun bindRow(item: ListItem): CustomSwitchLayout {
+        val view = CustomSwitchLayout(this)
+        when (item) {
+            is ListItem.Switch -> {
+                val data = item.data
+                view.titleView.text = data.title
+                view.subtitleView.text = data.description
+                view.setRowDescription(data.title, data.description)
+                view.setOnCheckListener {}
+                view.switchView.isChecked = Config.getConfig(data.key)
+                view.setOnCheckListener { isChecked ->
+                    Config.setConfig(data.key, isChecked)
+                    if (isChecked && data.warning != null) {
+                        AlertDialog.Builder(this)
+                            .setMessage(data.warning)
+                            .setPositiveButton(android.R.string.ok, null)
+                            .show()
+                    }
+                }
+            }
+            is ListItem.Choice -> {
+                view.titleView.text = item.title
+                view.subtitleView.text = item.description
+                view.setRowDescription(item.title, item.description)
+                view.setOnCheckListener {}
+                view.switchView.isChecked = item.selected
+                view.setOnCheckListener { isChecked ->
+                    if (isChecked) item.onSelect()
+                }
+            }
+            is ListItem.Header -> Unit // headers are rendered by addSection
+        }
+        return view
+    }
+
     private fun styledTitle(): CharSequence {
         val base = getString(R.string.app_name)
         return SpannableString(base).apply {
