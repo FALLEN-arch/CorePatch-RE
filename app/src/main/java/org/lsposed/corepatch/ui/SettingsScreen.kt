@@ -12,7 +12,6 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import org.lsposed.corepatch.R
 import org.lsposed.corepatch.UiTheme
@@ -119,7 +118,7 @@ fun settingsScreen(activity: Activity, onChange: () -> Unit): View {
         orientation = LinearLayout.VERTICAL
         minimumHeight = 52.dp
         setPadding(20.dp, 14.dp, 20.dp, 14.dp)
-        background = flatPressBackground(context)
+        background = pressGlow(context)
         val line = LinearLayout(activity).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
@@ -166,7 +165,7 @@ fun settingsScreen(activity: Activity, onChange: () -> Unit): View {
         R.string.accent_rr, R.string.accent_phosphor, R.string.accent_amber, R.string.accent_cyan,
     )
 
-    val scroll = ScrollView(activity)
+    val scroll = pageScroll(activity)
     val page = LinearLayout(activity).apply {
         orientation = LinearLayout.VERTICAL
         setPadding(16.dp, 16.dp, 16.dp, 24.dp)

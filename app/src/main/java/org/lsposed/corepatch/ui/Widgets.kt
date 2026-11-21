@@ -1,11 +1,12 @@
 package org.lsposed.corepatch.ui
 
+import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.StateListDrawable
+import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
+import android.view.animation.DecelerateInterpolator
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import org.lsposed.corepatch.R
 import org.lsposed.corepatch.UiTheme
@@ -39,11 +40,45 @@ fun card(context: Context): LinearLayout = LinearLayout(context).apply {
     background = context.getDrawable(R.drawable.card_bg)
 }
 
-/** Flat press feedback: a solid low-alpha tint appears instantly on press
- *  and disappears on release — no Material ripple bloom ("smoke"). */
-fun flatPressBackground(context: Context): StateListDrawable = StateListDrawable().apply {
-    val tint = ColorDrawable(context.textColorPrimary().withAlpha(0.10f))
-    addState(intArrayOf(android.R.attr.state_pressed), tint)
-    addState(intArrayOf(android.R.attr.state_focused), tint)
-    addState(intArrayOf(), ColorDrawable(Color.TRANSPARENT))
+/** Terminal press feedback: a rounded accent tint that fades in quickly on
+ *  press and out slowly on release — no Material ripple bloom ("smoke"). */
+class PressGlowDrawable(accent: Int, cornerRadiusPx: Float) : GradientDrawable() {
+    private var animator: ValueAnimator? = null
+
+    init {
+        setColor(accent)
+        cornerRadius = cornerRadiusPx
+        alpha = 0
+    }
+
+    override fun isStateful() = true
+
+    override fun onStateChange(state: IntArray): Boolean {
+        val target = if (state.contains(android.R.attr.state_pressed)) 38 else 0
+        animator?.cancel()
+        animator = ValueAnimator.ofInt(alpha, target).apply {
+            duration = if (target > 0) 90L else 180L
+            interpolator = DecelerateInterpolator()
+            addUpdateListener { value ->
+                alpha = value.animatedValue as Int
+                invalidateSelf()
+            }
+            start()
+        }
+        return true
+    }
+}
+
+/** Press feedback for clickable rows. */
+fun pressGlow(context: Context) = PressGlowDrawable(UiTheme.accent, 12.dp.toFloat())
+
+/** Page scroll container: content can glide past the bottom edge and the
+ *  fling decays a little slower, so long pages feel lighter to scroll. */
+fun pageScroll(context: Context): ScrollView = object : ScrollView(context) {
+    override fun fling(vy: Int) {
+        super.fling((vy * 1.2f).toInt())
+    }
+}.apply {
+    clipToPadding = false
+    setPadding(0, 0, 0, 24.dp)
 }

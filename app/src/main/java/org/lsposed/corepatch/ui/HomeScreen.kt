@@ -6,7 +6,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import org.lsposed.corepatch.App.Companion.mService
 import org.lsposed.corepatch.Config
@@ -66,7 +65,7 @@ fun homeScreen(activity: Activity): View {
     val all = sections.flatMap { it.second }
     val enabled = all.filter { Config.getConfig(it.key) }
 
-    val scroll = ScrollView(activity)
+    val scroll = pageScroll(activity)
     val page = LinearLayout(activity).apply {
         orientation = LinearLayout.VERTICAL
         setPadding(16.dp, 16.dp, 16.dp, 24.dp)

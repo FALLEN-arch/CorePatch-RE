@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import org.lsposed.corepatch.Config
 import org.lsposed.corepatch.R
 import org.lsposed.corepatch.UiTheme
@@ -15,7 +14,7 @@ fun patchesScreen(activity: Activity): View {
     val accent = UiTheme.accent
     val subText = activity.themeColor(R.attr.subTextColor)
 
-    val scroll = ScrollView(activity)
+    val scroll = pageScroll(activity)
     val page = LinearLayout(activity).apply {
         orientation = LinearLayout.VERTICAL
         setPadding(16.dp, 16.dp, 16.dp, 24.dp)

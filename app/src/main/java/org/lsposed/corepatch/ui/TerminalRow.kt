@@ -43,7 +43,7 @@ class TerminalRow(context: Context) : LinearLayout(context) {
 
     init {
         orientation = VERTICAL
-        background = flatPressBackground(context)
+        background = pressGlow(context)
         minimumHeight = 52.dp
         setPadding(20.dp, 14.dp, 20.dp, 14.dp)
 
