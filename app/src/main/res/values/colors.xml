@@ -1,4 +1,6 @@
 <resources>
-    <!-- Periwinkle accent pulled from the launcher icon background. -->
-    <color name="title_accent">#5B50CE</color>
+    <!-- Accent derived from the launcher icon background (#ACB6F1, hue 231°):
+         same hue and saturation, darkened to lightness 0.45 for 8.6:1
+         contrast on the light action bar. -->
+    <color name="title_accent">#2139C4</color>
 </resources>
