@@ -17,6 +17,7 @@ import android.widget.TextView
 import org.lsposed.corepatch.App.Companion.mService
 import org.lsposed.corepatch.App.Companion.reloadListener
 import org.lsposed.corepatch.adapter.MultiTypeListAdapter
+import org.lsposed.corepatch.data.ListItem
 import org.lsposed.corepatch.data.SwitchData
 
 class MainActivity : Activity() {
@@ -104,22 +105,34 @@ class MainActivity : Activity() {
             getString(R.string.bypass_block), getString(R.string.bypass_block_summary), Config.BYPASS_BLOCK
         )
 
-        val dataSet = arrayListOf(
-            bypassDowngrade,
-            bypassMinSdk,
-            bypassVerification,
-            bypassResourceArscRestrictions,
-            bypassDigest,
-            bypassExactSignatureMatch,
-            usePreviousSignatures,
-            allowHiddenApisForSystemApps,
-            bypassSharedUser,
-            disableVerificationAgent,
-            disableDeveloperVerification,
-            bypassBlock
+        val sections = listOf(
+            getString(R.string.section_installation) to listOf(
+                bypassDowngrade,
+                bypassMinSdk,
+                bypassResourceArscRestrictions,
+                bypassSharedUser,
+            ),
+            getString(R.string.section_signature_checks) to listOf(
+                bypassVerification,
+                bypassDigest,
+                bypassExactSignatureMatch,
+                usePreviousSignatures,
+            ),
+            getString(R.string.section_verification_services) to listOf(
+                disableVerificationAgent,
+                disableDeveloperVerification,
+                bypassBlock,
+            ),
+            getString(R.string.section_system_behavior) to listOf(
+                allowHiddenApisForSystemApps,
+            ),
         )
 
-        val adapter = MultiTypeListAdapter(dataSet)
+        val items = sections.flatMap { (header, switches) ->
+            listOf(ListItem.Header(header)) + switches.map { ListItem.Switch(it) }
+        }
+
+        val adapter = MultiTypeListAdapter(items)
 
         val listView = ListView(this)
         listView.adapter = adapter
