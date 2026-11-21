@@ -162,16 +162,7 @@ class MainActivity : Activity() {
             R.string.section_signature_checks to R.drawable.ic_sec_signature,
             R.string.section_verification_services to R.drawable.ic_sec_verification,
             R.string.section_system_behavior to R.drawable.ic_sec_system,
-            R.string.section_appearance to R.drawable.ic_sec_theme,
         ).entries.associate { getString(it.key) to it.value }
-
-        val currentTheme = UiTheme.get(this)
-        val appearance = listOf(
-            getString(R.string.theme_system) to UiTheme.SYSTEM,
-            getString(R.string.theme_light) to UiTheme.LIGHT,
-            getString(R.string.theme_dark) to UiTheme.DARK,
-            getString(R.string.theme_amoled) to UiTheme.AMOLED,
-        )
 
         val scroll = ScrollView(this).apply {
             fitsSystemWindows = true
@@ -182,8 +173,8 @@ class MainActivity : Activity() {
         }
         scroll.addView(page)
 
-        fun addSection(title: String, rows: List<ListItem>, badge: String? = null) {
-            page.addView(sectionHeader(title, iconsByTitle[title] ?: 0, badge))
+        fun addSection(title: String, rows: List<ListItem>) {
+            page.addView(sectionHeader(title, iconsByTitle[title] ?: 0))
             val card = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
                 background = getDrawable(R.drawable.card_bg)
@@ -196,31 +187,11 @@ class MainActivity : Activity() {
             addSection(header, switches.map { ListItem.Switch(it) })
         }
 
-        addSection(
-            getString(R.string.section_appearance),
-            appearance.map { (label, value) ->
-                ListItem.Choice(
-                    title = label,
-                    description = "",
-                    selected = currentTheme == value,
-                    onSelect = {
-                        UiTheme.set(this, value)
-                        recreate()
-                    },
-                )
-            },
-            badge = "!",
-        )
-
         setContentView(scroll)
     }
 
-    /**
-     * Accent-colored section header with icon, above its card.
-     * [badge] prefixes the title (e.g. "!" marks the Appearance section
-     * as separate from the module's core function).
-     */
-    private fun sectionHeader(title: String, icon: Int, badge: String? = null): TextView {
+    /** Accent-colored section header with icon, above its card. */
+    private fun sectionHeader(title: String, icon: Int): TextView {
         val header = TextView(this).apply {
             typeface = resources.getFont(R.font.montserrat_semibold)
             setTextSize(14f)
@@ -228,33 +199,23 @@ class MainActivity : Activity() {
             setTextColor(themeColor(R.attr.accentColor))
             setPadding(20.dp, 24.dp, 20.dp, 8.dp)
         }
-        val prefix = badge?.let { "$it  " } ?: ""
         if (icon != 0) {
             val iconSize = 18.dp
             val drawable = getDrawable(icon)!!.apply {
                 setTint(themeColor(R.attr.accentColor))
                 setBounds(0, 0, iconSize, iconSize)
             }
-            val text = SpannableString(prefix + "\u00a0 " + title).apply {
-                // Bold the badge so the separator reads before the icon/title.
-                if (badge != null) {
-                    setSpan(
-                        BrandTypefaceSpan(resources.getFont(R.font.montserrat_bold)),
-                        0, badge.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                }
-                // The icon replaces the space right after the prefix.
-                val iconStart = prefix.length
-                setSpan(ImageSpan(drawable, ImageSpan.ALIGN_CENTER), iconStart, iconStart + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            val text = SpannableString("\u00a0 " + title).apply {
+                setSpan(ImageSpan(drawable, ImageSpan.ALIGN_CENTER), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
             header.text = text
         } else {
-            header.text = prefix + title
+            header.text = title
         }
         return header
     }
 
-    /** Builds a row view for a list item (toggle or theme choice). */
+    /** Builds a row view for a list item (toggle). */
     private fun bindRow(item: ListItem): CustomSwitchLayout {
         val view = CustomSwitchLayout(this)
         when (item) {
@@ -272,23 +233,6 @@ class MainActivity : Activity() {
                             .setMessage(data.warning)
                             .setPositiveButton(android.R.string.ok, null)
                             .show()
-                    }
-                }
-            }
-            is ListItem.Choice -> {
-                view.titleView.text = item.title
-                view.subtitleView.text = item.description
-                view.setRowDescription(item.title, item.description)
-                view.setOnCheckListener {}
-                view.switchView.isChecked = item.selected
-                view.setOnCheckListener { isChecked ->
-                    if (isChecked) {
-                        item.onSelect()
-                    } else {
-                        // The active theme can't be switched off; snap back to checked.
-                        view.switchView.setOnCheckedChangeListener(null)
-                        view.switchView.isChecked = true
-                        view.setOnCheckListener { again -> if (again) item.onSelect() }
                     }
                 }
             }

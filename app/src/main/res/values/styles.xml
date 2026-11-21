@@ -8,10 +8,6 @@
         <item name="android:background">@color/page_dark</item>
         <item name="android:elevation">0dp</item>
     </style>
-    <style name="RRActionBar.Amoled" parent="android:Widget.DeviceDefault.ActionBar.Solid">
-        <item name="android:background">@color/amoled_black</item>
-        <item name="android:elevation">0dp</item>
-    </style>
 
     <!-- Light (default, name kept for the manifest). -->
     <style name="AppTheme" parent="android:style/Theme.DeviceDefault.Light">
@@ -43,16 +39,5 @@
         <item name="pageBackgroundColor">@color/page_dark</item>
         <item name="cardColor">@color/card_dark</item>
         <item name="android:actionBarStyle">@style/RRActionBar.Dark</item>
-    </style>
-
-    <!-- AMOLED: pure black page (user preference), raised card for hierarchy. -->
-    <style name="AppTheme.Amoled" parent="AppTheme.Dark">
-        <item name="android:statusBarColor">@color/amoled_black</item>
-        <item name="android:navigationBarColor">@color/amoled_black</item>
-        <item name="android:windowLightNavigationBar">false</item>
-        <item name="android:windowBackground">@color/amoled_black</item>
-        <item name="pageBackgroundColor">@color/amoled_black</item>
-        <item name="cardColor">@color/card_amoled</item>
-        <item name="android:actionBarStyle">@style/RRActionBar.Amoled</item>
     </style>
 </resources>
