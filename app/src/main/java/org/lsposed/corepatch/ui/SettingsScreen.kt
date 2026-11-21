@@ -119,9 +119,7 @@ fun settingsScreen(activity: Activity, onChange: () -> Unit): View {
         orientation = LinearLayout.VERTICAL
         minimumHeight = 52.dp
         setPadding(20.dp, 14.dp, 20.dp, 14.dp)
-        val outValue = TypedValue()
-        context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
-        setBackgroundResource(outValue.resourceId)
+        background = flatPressBackground(context)
         val line = LinearLayout(activity).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL

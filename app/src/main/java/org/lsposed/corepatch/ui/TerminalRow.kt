@@ -43,9 +43,7 @@ class TerminalRow(context: Context) : LinearLayout(context) {
 
     init {
         orientation = VERTICAL
-        val outValue = TypedValue()
-        context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
-        setBackgroundResource(outValue.resourceId)
+        background = flatPressBackground(context)
         minimumHeight = 52.dp
         setPadding(20.dp, 14.dp, 20.dp, 14.dp)
 

@@ -1,6 +1,9 @@
 package org.lsposed.corepatch.ui
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.StateListDrawable
 import android.util.TypedValue
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -34,4 +37,13 @@ fun sectionHeader(context: Context, title: String, accent: Int): TextView = Text
 fun card(context: Context): LinearLayout = LinearLayout(context).apply {
     orientation = LinearLayout.VERTICAL
     background = context.getDrawable(R.drawable.card_bg)
+}
+
+/** Flat press feedback: a solid low-alpha tint appears instantly on press
+ *  and disappears on release — no Material ripple bloom ("smoke"). */
+fun flatPressBackground(context: Context): StateListDrawable = StateListDrawable().apply {
+    val tint = ColorDrawable(context.textColorPrimary().withAlpha(0.10f))
+    addState(intArrayOf(android.R.attr.state_pressed), tint)
+    addState(intArrayOf(android.R.attr.state_focused), tint)
+    addState(intArrayOf(), ColorDrawable(Color.TRANSPARENT))
 }
