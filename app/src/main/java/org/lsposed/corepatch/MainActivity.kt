@@ -6,8 +6,9 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.TextPaint
 import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
+import android.text.style.TypefaceSpan
 import android.view.Gravity
 import android.view.ViewGroup.LayoutParams
 import android.widget.LinearLayout
@@ -127,19 +128,33 @@ class MainActivity : Activity() {
     }
 
     /**
-     * Builds the action bar title: "CorePatch" in the default text style and
-     * the "-RE" suffix highlighted in the icon's periwinkle accent.
+     * Builds the action bar title: the whole string set in Space Grotesk Bold
+     * (matching the launcher icon's modern-geometric vibe), with the "-RE"
+     * suffix highlighted in the icon's periwinkle accent.
      */
     private fun styledTitle(): CharSequence {
         val base = getString(R.string.app_name)
         val prefix = base.removeSuffix("-RE")
-        if (prefix.length == base.length) return base
         return SpannableString(base).apply {
-            setSpan(StyleSpan(Typeface.BOLD), 0, prefix.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             setSpan(
-                ForegroundColorSpan(getColor(R.color.title_accent)),
-                prefix.length, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                BrandTypefaceSpan(getFont(R.font.space_grotesk_bold)),
+                0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
+            if (prefix.length != base.length) {
+                setSpan(
+                    ForegroundColorSpan(getColor(R.color.title_accent)),
+                    prefix.length, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            }
+        }
+    }
+
+    /** Applies a bundled typeface to the text it spans (metric-affecting). */
+    private class BrandTypefaceSpan(private val typeface: Typeface) : TypefaceSpan("") {
+        override fun updateDrawState(ds: TextPaint) = apply(ds)
+        override fun updateMeasureState(textPaint: TextPaint) = apply(textPaint)
+        private fun apply(paint: TextPaint) {
+            paint.typeface = typeface
         }
     }
 
