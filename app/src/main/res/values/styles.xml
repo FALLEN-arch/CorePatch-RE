@@ -1,4 +1,18 @@
 <resources>
+    <!-- Action bars blend into the page (no band, no shadow). -->
+    <style name="RRActionBar.Light" parent="android:Widget.DeviceDefault.Light.ActionBar.Solid">
+        <item name="android:background">@color/page_light</item>
+        <item name="android:elevation">0dp</item>
+    </style>
+    <style name="RRActionBar.Dark" parent="android:Widget.DeviceDefault.ActionBar.Solid">
+        <item name="android:background">@color/page_dark</item>
+        <item name="android:elevation">0dp</item>
+    </style>
+    <style name="RRActionBar.Amoled" parent="android:Widget.DeviceDefault.ActionBar.Solid">
+        <item name="android:background">@color/amoled_black</item>
+        <item name="android:elevation">0dp</item>
+    </style>
+
     <!-- Light (default, name kept for the manifest). -->
     <style name="AppTheme" parent="android:style/Theme.DeviceDefault.Light">
         <item name="android:windowLightStatusBar">true</item>
@@ -12,6 +26,7 @@
         <item name="subTextColor">@color/text_navy</item>
         <item name="pageBackgroundColor">@color/page_light</item>
         <item name="cardColor">@color/card_light</item>
+        <item name="android:actionBarStyle">@style/RRActionBar.Light</item>
     </style>
 
     <!-- Dark: tonal dark surfaces, not flat grey. -->
@@ -27,6 +42,7 @@
         <item name="subTextColor">@color/subtext_on_dark</item>
         <item name="pageBackgroundColor">@color/page_dark</item>
         <item name="cardColor">@color/card_dark</item>
+        <item name="android:actionBarStyle">@style/RRActionBar.Dark</item>
     </style>
 
     <!-- AMOLED: pure black page (user preference), raised card for hierarchy. -->
@@ -37,5 +53,6 @@
         <item name="android:windowBackground">@color/amoled_black</item>
         <item name="pageBackgroundColor">@color/amoled_black</item>
         <item name="cardColor">@color/card_amoled</item>
+        <item name="android:actionBarStyle">@style/RRActionBar.Amoled</item>
     </style>
 </resources>
