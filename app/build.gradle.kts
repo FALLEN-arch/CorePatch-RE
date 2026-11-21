@@ -19,7 +19,7 @@ configure<ApplicationExtension> {
         releaseSigningPropertyNames.all { providers.gradleProperty(it).isPresent }
 
     defaultConfig {
-        applicationId = "org.lsposed.corepatch"
+        applicationId = "dev.rr.app"
         minSdk = 28
         targetSdk = 37
         versionCode = 1

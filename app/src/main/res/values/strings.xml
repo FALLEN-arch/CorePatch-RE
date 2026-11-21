@@ -4,6 +4,11 @@
     <string name="section_signature_checks">Signature checks</string>
     <string name="section_verification_services">Verification services</string>
     <string name="section_system_behavior">System behavior</string>
+    <string name="section_appearance">Appearance</string>
+    <string name="theme_system">Follow system</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_amoled">AMOLED black</string>
     <string name="module_description">Package manager service modifications</string>
     <string name="xposed_service_unavailable">Unable to connect to Xposed service</string>
     <string name="xposed_service_unavailable_summary">Make sure the Xposed framework is running and this module is enabled.</string>

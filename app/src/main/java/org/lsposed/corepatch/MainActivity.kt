@@ -19,9 +19,11 @@ import org.lsposed.corepatch.App.Companion.reloadListener
 import org.lsposed.corepatch.adapter.MultiTypeListAdapter
 import org.lsposed.corepatch.data.ListItem
 import org.lsposed.corepatch.data.SwitchData
+import org.lsposed.corepatch.ui.themeColor
 
 class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        UiTheme.apply(this)
         super.onCreate(savedInstanceState)
         title = styledTitle()
         reloadListener = {
@@ -136,10 +138,31 @@ class MainActivity : Activity() {
             R.string.section_system_behavior to R.drawable.ic_sec_system,
         )
 
+        val appearance = listOf(
+            getString(R.string.theme_system) to UiTheme.SYSTEM,
+            getString(R.string.theme_light) to UiTheme.LIGHT,
+            getString(R.string.theme_dark) to UiTheme.DARK,
+            getString(R.string.theme_amoled) to UiTheme.AMOLED,
+        )
+        val currentTheme = UiTheme.get(this)
+        val themeSection = listOf(
+            ListItem.Header(getString(R.string.section_appearance), R.drawable.ic_sec_theme)
+        ) + appearance.map { (label, value) ->
+            ListItem.Choice(
+                title = label,
+                description = "",
+                selected = currentTheme == value,
+                onSelect = {
+                    UiTheme.set(this, value)
+                    recreate()
+                },
+            )
+        }
+
         val items = sections.flatMap { (header, switches) ->
             val icon = icons.entries.firstOrNull { getString(it.key) == header }?.value ?: 0
             listOf(ListItem.Header(header, icon)) + switches.map { ListItem.Switch(it) }
-        }
+        } + themeSection
 
         val adapter = MultiTypeListAdapter(items)
 
@@ -161,7 +184,7 @@ class MainActivity : Activity() {
                 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             setSpan(
-                ForegroundColorSpan(getColor(R.color.title_accent)),
+                ForegroundColorSpan(themeColor(R.attr.accentColor)),
                 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }

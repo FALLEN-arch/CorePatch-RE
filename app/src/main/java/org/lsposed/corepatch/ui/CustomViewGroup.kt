@@ -8,6 +8,13 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 
+/** Resolves a theme attribute color (e.g. R.attr.accentColor). */
+fun Context.themeColor(attr: Int): Int {
+    val value = TypedValue()
+    theme.resolveAttribute(attr, value, true)
+    return value.data
+}
+
 // thanks Drakeet
 val Int.dp
     get() = TypedValue.applyDimension(

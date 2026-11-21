@@ -5,4 +5,9 @@
     <color name="title_accent">#2538C1</color>
     <!-- Dark navy from the icon's outlines (#383850), 11.4:1 on white. -->
     <color name="text_navy">#383850</color>
+    <!-- Dark-theme variants: the icon's own lavender as accent (6.6:1 on
+         #303030), soft lavender-grey body text. -->
+    <color name="accent_on_dark">#B0B8F0</color>
+    <color name="subtext_on_dark">#C3C6DE</color>
+    <color name="amoled_black">#000000</color>
 </resources>

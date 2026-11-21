@@ -16,6 +16,7 @@ import org.lsposed.corepatch.data.ListItem
 import org.lsposed.corepatch.data.SwitchData
 import org.lsposed.corepatch.ui.CustomSwitchLayout
 import org.lsposed.corepatch.ui.dp
+import org.lsposed.corepatch.ui.themeColor
 
 class MultiTypeListAdapter(private val items: List<ListItem>) : BaseAdapter() {
     override fun getCount(): Int {
@@ -30,11 +31,12 @@ class MultiTypeListAdapter(private val items: List<ListItem>) : BaseAdapter() {
         return position.toLong()
     }
 
-    override fun getViewTypeCount(): Int = 2
+    override fun getViewTypeCount(): Int = 3
 
     override fun getItemViewType(position: Int): Int = when (items[position]) {
         is ListItem.Header -> 0
         is ListItem.Switch -> 1
+        is ListItem.Choice -> 2
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -64,6 +66,18 @@ class MultiTypeListAdapter(private val items: List<ListItem>) : BaseAdapter() {
                 }
                 view
             }
+            is ListItem.Choice -> {
+                val view = convertView as? CustomSwitchLayout ?: CustomSwitchLayout(context)
+                view.titleView.text = item.title
+                view.subtitleView.text = item.description
+
+                view.setOnCheckListener {}
+                view.switchView.isChecked = item.selected
+                view.setOnCheckListener { isChecked ->
+                    if (isChecked) item.onSelect()
+                }
+                view
+            }
         }
     }
 
@@ -77,11 +91,11 @@ class MultiTypeListAdapter(private val items: List<ListItem>) : BaseAdapter() {
         setPadding(16.dp, 20.dp, 16.dp, 4.dp)
     }
 
-    /** Builds "icon + title" with the icon tinted to the accent color. */
+    /** Builds "icon + title" with the icon tinted to the theme accent. */
     private fun iconSpanned(context: Context, iconRes: Int, title: String): CharSequence {
         val iconSize = 18.dp
         val drawable = context.getDrawable(iconRes)!!.apply {
-            setTint(context.getColor(R.color.title_accent))
+            setTint(context.themeColor(R.attr.accentColor))
             setBounds(0, 0, iconSize, iconSize)
         }
         return SpannableString("  ${title}").apply {

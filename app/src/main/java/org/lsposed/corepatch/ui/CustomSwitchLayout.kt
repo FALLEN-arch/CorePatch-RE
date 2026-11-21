@@ -20,7 +20,7 @@ class CustomSwitchLayout(context: Context) : CustomViewGroup(context) {
         this@CustomSwitchLayout.addView(this)
     }
     val subtitleView = TextView(context).apply {
-        setTextColor(context.getColor(R.color.text_navy))
+        setTextColor(context.themeColor(R.attr.subTextColor))
         layoutParams = MarginLayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
             leftMargin = 16.dp
             bottomMargin = 8.dp
