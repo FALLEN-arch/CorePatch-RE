@@ -11,7 +11,7 @@ class CustomSwitchLayout(context: Context) : CustomViewGroup(context) {
 
     val titleView = TextView(context).apply {
         setTextAppearance(android.R.style.TextAppearance_Medium)
-        typeface = context.resources.getFont(R.font.jetbrains_mono_medium)
+        typeface = context.resources.getFont(R.font.montserrat_medium)
         layoutParams = MarginLayoutParams(WRAP_CONTENT, WRAP_CONTENT).apply {
             topMargin = 8.dp
             leftMargin = 16.dp

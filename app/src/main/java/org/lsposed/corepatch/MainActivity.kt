@@ -128,16 +128,16 @@ class MainActivity : Activity() {
             ),
         )
 
-        // Nerd Font glyphs (FontAwesome range) matching each section.
+        // Section header icons, tinted at render time.
         val icons = mapOf(
-            R.string.section_installation to '',           // download
-            R.string.section_signature_checks to '',       // lock
-            R.string.section_verification_services to '',  // shield
-            R.string.section_system_behavior to '',        // cogs
+            R.string.section_installation to R.drawable.ic_sec_install,
+            R.string.section_signature_checks to R.drawable.ic_sec_signature,
+            R.string.section_verification_services to R.drawable.ic_sec_verification,
+            R.string.section_system_behavior to R.drawable.ic_sec_system,
         )
 
         val items = sections.flatMap { (header, switches) ->
-            val icon = icons.entries.firstOrNull { getString(it.key) == header }?.value?.toString() ?: ""
+            val icon = icons.entries.firstOrNull { getString(it.key) == header }?.value ?: 0
             listOf(ListItem.Header(header, icon)) + switches.map { ListItem.Switch(it) }
         }
 
@@ -157,7 +157,7 @@ class MainActivity : Activity() {
         val base = getString(R.string.app_name)
         return SpannableString(base).apply {
             setSpan(
-                BrandTypefaceSpan(resources.getFont(R.font.jetbrains_mono_bold)),
+                BrandTypefaceSpan(resources.getFont(R.font.montserrat_bold)),
                 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             setSpan(
