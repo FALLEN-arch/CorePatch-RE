@@ -8,9 +8,10 @@
     <!-- Dark theme: the icon's own lavender as accent, soft lavender-grey text. -->
     <color name="accent_on_dark">#B0B8F0</color>
     <color name="subtext_on_dark">#C3C6DE</color>
-    <!-- Surface hierarchy per theme (page < card), translucent for glass. -->
-    <color name="page_light">#F2F3FA</color>
-    <color name="card_light">#FFFFFF</color>
-    <color name="page_dark">#14151C</color>
-    <color name="card_dark">#1F2130</color>
+    <!-- Surface hierarchy per theme (page < card), translucent so the
+         wallpaper shows through the frosted glass scrim. -->
+    <color name="page_light">#E8F2F3FA</color>
+    <color name="card_light">#8CFFFFFF</color>
+    <color name="page_dark">#D914151C</color>
+    <color name="card_dark">#1FFFFFFF</color>
 </resources>

@@ -120,7 +120,7 @@ class MainActivity : Activity() {
                 letterSpacing = 0.05f
                 setTextColor(if (active) accent else subText)
                 setPadding(6.dp, 10.dp, 6.dp, 4.dp)
-            })
+            }, LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT))
             addView(View(this@MainActivity).apply {
                 setBackgroundColor(if (active) accent else Color.TRANSPARENT)
             }, LinearLayout.LayoutParams(MATCH_PARENT, 2.dp))
